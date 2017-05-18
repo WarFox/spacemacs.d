@@ -387,7 +387,7 @@ you should place your code here."
   (org-babel-do-load-languages
    'org-babel-load-languages
    '((lisp . t)
-     (sh . t)
+     (shell . t)
      (emacs-lisp . t)
      (python . t)
      (scala . t)
