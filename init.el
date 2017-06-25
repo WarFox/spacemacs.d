@@ -411,27 +411,40 @@ you should place your code here."
      )
    )
 
+  (defun my/change-file-extension ()
+      (interactive)
+      (let* ((new-extension (read-from-minibuffer "Type the new extension including the dot (.): "))
+             (new-file-name (concat (file-name-sans-extension buffer-file-name) new-extension))
+             (filename (buffer-file-name)))
+        (rename-file filename new-file-name t)
+        (rename-buffer (concat (file-name-sans-extension (buffer-name)) new-extension))
+        (set-visited-file-name new-file-name)
+        (set-buffer-modified-p nil)
+        (message (concat "File renamed to " new-file-name))))
+
   ;; hexo
-  (defun hexo-my-blog ( )
+  (defun my/hexo-blog ( )
     "open my hexo blog"
     (interactive)
     (hexo "/Users/WarFox/Workspace/Personal/tech"))
 
-  (setq hexo-shell-command-separator "; and")
+  (setq hexo-posix-compatible-shell-file-path "/bin/bash")
 
   ;; projectile open README file
-  (defun projectile-open-readme ()
+  (defun my/projectile-open-readme ()
     "open README.md file in the current project root"
     (interactive)
     (find-file (concat (projectile-project-root) "README.md")))
 
-  (defun projectile-open-readme-org ()
+  (defun my/projectile-open-readme-org ()
     "open README.org file in the current project root"
     (interactive)
     (find-file (concat (projectile-project-root) "README.org")))
 
-  (spacemacs/set-leader-keys "oprg" 'projectile-open-readme-org)
-  (spacemacs/set-leader-keys "oprm" 'projectile-open-readme)
+  (spacemacs/set-leader-keys "oprg" 'my/projectile-open-readme-org)
+  (spacemacs/set-leader-keys "oprm" 'my/projectile-open-readme)
+  (spacemacs/set-leader-keys "ofrx" 'my/change-file-extension)
+  (spacemacs/set-leader-keys "oh" 'my/hexo-blog)
 
   ;; map escape to "jk"
   (setq-default evil-escape-key-sequence "jk")
