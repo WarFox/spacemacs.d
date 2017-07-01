@@ -95,7 +95,6 @@ values."
      swift
      syntax-checking
      terraform
-     themes-megapack
      vagrant
      version-control
      vimscript
@@ -107,7 +106,16 @@ values."
    ;; wrapped in a layer. If you need some configuration for these
    ;; packages, then consider creating a layer. You can also put the
    ;; configuration in `dotspacemacs/user-config'.
-   dotspacemacs-additional-packages '(meghanada groovy-mode gradle-mode feature-mode hexo langtool all-the-icons play-routes-mode darcula-theme dracula-theme)
+   dotspacemacs-additional-packages '(all-the-icons
+                                      darcula-theme
+                                      dracula-theme
+                                      feature-mode
+                                      gradle-mode
+                                      groovy-mode
+                                      hexo
+                                      langtool
+                                      meghanada
+                                      play-routes-mode)
    ;; A list of packages that cannot be updated.
    dotspacemacs-frozen-packages '()
    ;; A list of packages that will not be installed and loaded.
@@ -348,7 +356,9 @@ before packages are loaded. If you are unsure, you should try in setting them in
 
   ;; add melpa-stable to archives
   (push '("melpa-stable" . "stable.melpa.org/packages/") configuration-layer--elpa-archives)
-  (push '("ensime" . "melpa-stable") package-pinned-packages)
+  (push '(ensime . "melpa-stable") package-pinned-packages)
+  (add-to-list 'package-archives '("melpa" . "http://melpa.milkbox.net/packages/") t)
+
 )
 
 (defun dotspacemacs/user-config ()
@@ -366,13 +376,17 @@ you should place your code here."
 
   (add-to-list 'exec-path "/usr/local/bin")
 
+  (setq
+   ensime-sbt-command "/usr/local/bin/sbt"
+   sbt:program-name "/usr/local/bin/sbt")
+
   ;; ensime
   (setq ensime-startup-notification nil)
 
-  ;; ensime scala mode
-  (add-hook 'scala-mode-hook
-            (lambda ()
-              (add-hook 'after-save-hook 'ensime-sbt-do-compile)))
+  ;; ;; ensime scala mode
+  ;; (add-hook 'scala-mode-hook
+  ;;           (lambda ()
+  ;;             (add-hook 'after-save-hook 'ensime-sbt-do-compile)))
 
   (setq flycheck-scalastyle-jar "/usr/local/Cellar/scalastyle/0.8.0/libexec/scalastyle_2.11-0.8.0-batch.jar")
   (setq flycheck-scalastylerc "/usr/local/etc/scalastyle_config.xml")
@@ -396,7 +410,7 @@ you should place your code here."
 
   ;; web-mode
   (add-to-list 'auto-mode-alist '("\\.swig\\'" . web-mode))
-  (add-to-list 'auto-mode-alist '("\\.routes\'". play-routes-mode))
+  (add-to-list 'auto-mode-alist '("\\.routes$" . play-routes-mode))
 
   ;; active Babel languages
   (org-babel-do-load-languages
