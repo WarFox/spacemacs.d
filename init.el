@@ -374,6 +374,10 @@ This is the place where most of your configurations should be done. Unless it is
 explicitly specified that a variable should be set before a package is loaded,
 you should place your code here."
 
+  ;; M-3 is mapped to window 3, so map Super-3 to get £ sign
+  ;; (This is for Dvorak layout, UK layout may need to map # instead)
+  (global-set-key (kbd "s-3") '(lambda() (interactive) (insert "£")))
+
   (setq tabbar-ruler-global-tabbar t)    ; get tabbar
   (setq tabbar-ruler-global-ruler nil)   ; get global ruler
   (setq tabbar-ruler-popup-menu t)       ; get popup menu.
@@ -453,7 +457,7 @@ you should place your code here."
         (message (concat "File renamed to " new-file-name))))
 
   ;; hexo
-  (defun my/hexo-blog ( )
+  (defun my/hexo-blog ()
     "open my hexo blog"
     (interactive)
     (hexo "/Users/WarFox/Workspace/Personal/tech"))
@@ -471,8 +475,14 @@ you should place your code here."
     (interactive)
     (find-file (concat (projectile-project-root) "README.org")))
 
-  (spacemacs/set-leader-keys "oprg" 'my/projectile-open-readme-org)
-  (spacemacs/set-leader-keys "oprm" 'my/projectile-open-readme)
+  (spacemacs/declare-prefix "o" "user")
+  (spacemacs/declare-prefix "op" "projectile")
+  (spacemacs/declare-prefix "opr" "README")
+  (spacemacs/set-leader-keys
+    "opro" 'my/projectile-open-readme-org
+    "oprm" 'my/projectile-open-readme)
+
+  (spacemacs/declare-prefix "of" "file")
   (spacemacs/set-leader-keys "ofrx" 'my/change-file-extension)
   (spacemacs/set-leader-keys "oh" 'my/hexo-blog)
 
