@@ -115,7 +115,9 @@ values."
                                       hexo
                                       langtool
                                       meghanada
-                                      play-routes-mode)
+                                      play-routes-mode
+                                      tabbar
+                                      tabbar-ruler)
    ;; A list of packages that cannot be updated.
    dotspacemacs-frozen-packages '()
    ;; A list of packages that will not be installed and loaded.
@@ -371,6 +373,17 @@ layers configuration.
 This is the place where most of your configurations should be done. Unless it is
 explicitly specified that a variable should be set before a package is loaded,
 you should place your code here."
+
+  (setq tabbar-ruler-global-tabbar t)    ; get tabbar
+  (setq tabbar-ruler-global-ruler nil)   ; get global ruler
+  (setq tabbar-ruler-popup-menu t)       ; get popup menu.
+  (setq tabbar-ruler-popup-toolbar t)    ; get popup toolbar
+  (setq tabbar-ruler-popup-scrollbar nil)  ; show scroll-bar on mouse-move
+  (require 'tabbar)
+  (require 'tabbar-ruler)
+  (setq tabbar-buffer-groups-function 'tabbar-ruler-projectile-tabbar-buffer-groups)
+  ;; (setq tabbar-buffer-groups-function 'tabbar-buffer-groups)
+  ;; (tabbar-ruler-group-by-projectile-project)
 
   (setq-default
    ;; Use arrows as separator for mode-line
