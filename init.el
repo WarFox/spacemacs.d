@@ -359,6 +359,9 @@ before packages are loaded. If you are unsure, you should try in setting them in
   (push '(ensime . "melpa-stable") package-pinned-packages)
   (add-to-list 'package-archives '("melpa" . "http://melpa.milkbox.net/packages/") t)
 
+  ;; spell-checking use aspell and default to british language
+  (setq ispell-program-name "aspell")
+  (setq ispell-dictionary "british")
 )
 
 (defun dotspacemacs/user-config ()
