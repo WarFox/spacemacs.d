@@ -78,6 +78,7 @@ values."
      racket
      ranger
      react
+     restclient
      ruby
      ruby-on-rails
      (scala :variables
@@ -439,11 +440,13 @@ you should place your code here."
    'org-babel-load-languages
    '(
      (emacs-lisp . t)
+     (http . t)
      (lisp . t)
      (python . t)
+     (restclient . t)
      (scala . t)
      (shell . t)
-     (sqlite .t)
+     (sqlite . t)
      )
    )
 
