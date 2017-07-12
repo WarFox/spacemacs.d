@@ -167,7 +167,7 @@ values."
    ;; with `:variables' keyword (similar to layers). Check the editing styles
    ;; section of the documentation for details on available variables.
    ;; (default 'vim)
-   dotspacemacs-editing-style 'vim
+   dotspacemacs-editing-style 'hybrid
    ;; If non nil output loading progress in `*Messages*' buffer. (default nil)
    dotspacemacs-verbose-loading nil
    ;; Specify the startup banner. Default value is `official', it displays
@@ -449,6 +449,11 @@ you should place your code here."
      (sqlite . t)
      )
    )
+
+  ;; org-mode hook
+  (add-hook 'org-mode-hook
+            (lambda()
+              (add-to-list 'org-structure-template-alist '("t" "#+TITLE: ?") t)))
 
   (defun my/change-file-extension ()
       (interactive)
