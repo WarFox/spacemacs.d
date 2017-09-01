@@ -64,13 +64,14 @@ values."
      ivy
      ipython-notebook
      imenu-list
-     nginx
      java
      javascript
      latex
      (markdown :variables
                markdown-live-preview-engine 'vmd)
+     nginx
      org
+     org-jira
      osx
      (python :variables
              python-enable-yapf-format-on-save t
@@ -167,7 +168,7 @@ values."
    ;; with `:variables' keyword (similar to layers). Check the editing styles
    ;; section of the documentation for details on available variables.
    ;; (default 'vim)
-   dotspacemacs-editing-style 'hybrid
+   dotspacemacs-editing-style 'vim
    ;; If non nil output loading progress in `*Messages*' buffer. (default nil)
    dotspacemacs-verbose-loading nil
    ;; Specify the startup banner. Default value is `official', it displays
@@ -192,16 +193,18 @@ values."
    ;; List of themes, the first of the list is loaded when spacemacs starts.
    ;; Press <SPC> T n to cycle to the next theme in the list (works great
    ;; with 2 themes variants, one dark and one light)
-   dotspacemacs-themes '(dracula
+   dotspacemacs-themes '(spacemacs-light
                          spacemacs-dark
+                         dracula
                          darcula
+                         sanityinc-solarized-light
                          sanityinc-solarized-dark)
    ;; If non nil the cursor color matches the state color in GUI Emacs.
    dotspacemacs-colorize-cursor-according-to-state t
    ;; Default font, or prioritized list of fonts. `powerline-scale' allows to
    ;; quickly tweak the mode-line size to make separators look not too crappy.
    dotspacemacs-default-font '("SauceCodePro Nerd Font"
-                               :size 13
+                               :size 15
                                :weight normal
                                :width normal
                                :powerline-scale 1.1)
@@ -381,6 +384,11 @@ you should place your code here."
   ;; (This is for Dvorak layout, UK layout may need to map # instead)
   (global-set-key (kbd "s-3") '(lambda() (interactive) (insert "£")))
 
+  ;; disable emoji mode for org-jira-mode
+  (add-hook 'org-jira-mode-hook
+            (lambda ()
+              (emoji-cheat-sheet-plus-display-mode -1)))
+
   (setq tabbar-ruler-global-tabbar t)    ; get tabbar
   (setq tabbar-ruler-global-ruler nil)   ; get global ruler
   (setq tabbar-ruler-popup-menu t)       ; get popup menu.
@@ -512,6 +520,9 @@ you should place your code here."
 
   ;; display time mode
   (display-time-mode t)
+
+  ;; load local.el file
+  (load "~/.spacemacs.d/local")
 )
 
 ;; Do not write anything past this comment. This is where Emacs will
