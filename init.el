@@ -70,7 +70,11 @@ values."
      (markdown :variables
                markdown-live-preview-engine 'vmd)
      nginx
-     org
+     (org :variables
+          org-enable-github-support t
+          org-enable-reveal-js-support t
+          org-projectile-per-project-filepath "TODOs.org"
+          org-projectile-projects-file "~/Dropbox/org-mode/Projects.org")
      org-jira
      osx
      (python :variables
@@ -98,7 +102,7 @@ values."
      sql
      swift
      syntax-checking
-     terraform
+     (terraform :variables terraform-auto-format-on-save t)
      vagrant
      version-control
      vimscript
@@ -116,6 +120,7 @@ values."
                                       feature-mode
                                       gradle-mode
                                       groovy-mode
+                                      helm-gitignore
                                       hexo
                                       langtool
                                       meghanada
@@ -193,9 +198,9 @@ values."
    ;; List of themes, the first of the list is loaded when spacemacs starts.
    ;; Press <SPC> T n to cycle to the next theme in the list (works great
    ;; with 2 themes variants, one dark and one light)
-   dotspacemacs-themes '(spacemacs-light
+   dotspacemacs-themes '(dracula
+                         spacemacs-light
                          spacemacs-dark
-                         dracula
                          darcula
                          sanityinc-solarized-light
                          sanityinc-solarized-dark)
@@ -384,10 +389,53 @@ you should place your code here."
   ;; (This is for Dvorak layout, UK layout may need to map # instead)
   (global-set-key (kbd "s-3") '(lambda() (interactive) (insert "£")))
 
-  ;; disable emoji mode for org-jira-mode
-  (add-hook 'org-jira-mode-hook
-            (lambda ()
-              (emoji-cheat-sheet-plus-display-mode -1)))
+  (with-eval-after-load 'org
+    ;; here goes your Org config :)
+    ;; to avoid conflicts with the org shipped with emacs
+    ;; ....
+    (add-hook 'org-mode-hook
+              (lambda ()
+                (message "org mode hook called")
+                (emoji-cheat-sheet-plus-display-mode -1)))
+
+    ;; disable emoji mode for org-jira-mode
+    (add-hook 'org-jira-mode-hook
+              (lambda ()
+                (message "org jira mode hook called")
+                (emoji-cheat-sheet-plus-display-mode -1)))
+
+    ;; org-mode hook
+    (add-hook 'org-mode-hook
+              (lambda()
+                (add-to-list 'org-structure-template-alist '("t" "#+TITLE: ?") t)))
+
+    ;; active Babel languages
+    (org-babel-do-load-languages
+     'org-babel-load-languages
+     '(
+       (emacs-lisp . t)
+       (http . t)
+       (lisp . t)
+       (python . t)
+       (restclient . t)
+       (scala . t)
+       (shell . t)
+       (sqlite . t)
+       ))
+
+
+    ;; Override this on each org-file by adding
+    ;; #+REVEAL_ROOT: http://cdn.jsdelivr.net/reveal.js/3.0.0/
+    (setq org-reveal-root "http://cdn.jsdelivr.net/reveal.js/3.0.0/")
+
+    ;; Set deft-directory to Dropbox so it is in sync
+    (setq deft-directory "~/Dropbox/org-mode/deft"))
+
+  ;; Add projectile TODOs.org files to agenda
+  (with-eval-after-load 'org-agenda
+    (require 'org-projectile)
+    (setq org-agenda-files (append org-agenda-files (org-projectile-todo-files)))
+    (push (org-projectile-project-todo-entry) org-capture-templates))
 
   (setq tabbar-ruler-global-tabbar t)    ; get tabbar
   (setq tabbar-ruler-global-ruler nil)   ; get global ruler
@@ -443,26 +491,6 @@ you should place your code here."
   (add-to-list 'auto-mode-alist '("\\.swig\\'" . web-mode))
   (add-to-list 'auto-mode-alist '("\\.routes$" . play-routes-mode))
 
-  ;; active Babel languages
-  (org-babel-do-load-languages
-   'org-babel-load-languages
-   '(
-     (emacs-lisp . t)
-     (http . t)
-     (lisp . t)
-     (python . t)
-     (restclient . t)
-     (scala . t)
-     (shell . t)
-     (sqlite . t)
-     )
-   )
-
-  ;; org-mode hook
-  (add-hook 'org-mode-hook
-            (lambda()
-              (add-to-list 'org-structure-template-alist '("t" "#+TITLE: ?") t)))
-
   (defun my/change-file-extension ()
       (interactive)
       (let* ((new-extension (read-from-minibuffer "Type the new extension including the dot (.): "))
@@ -478,7 +506,7 @@ you should place your code here."
   (defun my/hexo-blog ()
     "open my hexo blog"
     (interactive)
-    (hexo "/Users/WarFox/Workspace/Personal/tech"))
+    (hexo "~/Workspace/Personal/tech"))
 
   (setq hexo-posix-compatible-shell-file-path "/bin/bash")
 
@@ -501,13 +529,13 @@ you should place your code here."
     "oprm" 'my/projectile-open-readme)
 
   (spacemacs/declare-prefix "of" "file")
-  (spacemacs/set-leader-keys "ofrx" 'my/change-file-extension)
+  (spacemacs/set-leader-keys "ofx" 'my/change-file-extension)
   (spacemacs/set-leader-keys "oh" 'my/hexo-blog)
 
   ;; map escape to "jk"
   (setq-default evil-escape-key-sequence "jk")
 
-  (setq langtool-language-tool-jar "/usr/local/Cellar/languagetool/3.6/libexec/languagetool-commandline.jar")
+  (setq langtool-language-tool-jar "/usr/local/Cellar/languagetool/3.9/libexec/languagetool-commandline.jar")
   (setq langtool-default-language "en-GB")
 
   ;; neo-tree icons
