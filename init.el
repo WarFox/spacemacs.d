@@ -389,10 +389,20 @@ you should place your code here."
   ;; (This is for Dvorak layout, UK layout may need to map # instead)
   (global-set-key (kbd "s-3") '(lambda() (interactive) (insert "£")))
 
+  ;; Set deft-directory to Dropbox so it is in sync
+  (setq deft-directory "~/Dropbox/org-mode/deft")
+
   (with-eval-after-load 'org
     ;; here goes your Org config :)
     ;; to avoid conflicts with the org shipped with emacs
     ;; ....
+    (setq-default org-display-custom-times t)
+    (setq org-directory "~/Dropbox/org-mode"
+          org-time-stamp-custom-formats '("<%d/%m/%Y %a>" . "<%d/%m/%Y %a %H:%M>")
+          ;; Override this on each org-file by adding
+          ;; #+REVEAL_ROOT: http://cdn.jsdelivr.net/reveal.js/3.0.0/
+          org-reveal-root "http://cdn.jsdelivr.net/reveal.js/3.0.0/")
+
     (add-hook 'org-mode-hook
               (lambda ()
                 (message "org mode hook called")
@@ -422,26 +432,23 @@ you should place your code here."
        (shell . t)
        (sqlite . t)
        ))
-
-
-    ;; Override this on each org-file by adding
-    ;; #+REVEAL_ROOT: http://cdn.jsdelivr.net/reveal.js/3.0.0/
-    (setq org-reveal-root "http://cdn.jsdelivr.net/reveal.js/3.0.0/")
-
-    ;; Set deft-directory to Dropbox so it is in sync
-    (setq deft-directory "~/Dropbox/org-mode/deft"))
+    )
 
   ;; Add projectile TODOs.org files to agenda
   (with-eval-after-load 'org-agenda
     (require 'org-projectile)
-    (setq org-agenda-files (append org-agenda-files (org-projectile-todo-files)))
+    (setq org-agenda-files (append '("~/Dropbox/org-mode/deft" "~/Dropbox/org-mode/org-jira")
+                                   (org-projectile-todo-files)))
     (push (org-projectile-project-todo-entry) org-capture-templates))
 
-  (setq tabbar-ruler-global-tabbar t)    ; get tabbar
-  (setq tabbar-ruler-global-ruler nil)   ; get global ruler
-  (setq tabbar-ruler-popup-menu t)       ; get popup menu.
-  (setq tabbar-ruler-popup-toolbar t)    ; get popup toolbar
-  (setq tabbar-ruler-popup-scrollbar nil)  ; show scroll-bar on mouse-move
+  (with-eval-after-load 'org-jira
+    (setq org-jira-working-dir "~/Dropbox/org-mode/org-jira"))
+
+  (setq tabbar-ruler-global-tabbar t    ; get tabbar
+        tabbar-ruler-global-ruler nil   ; get global ruler
+        tabbar-ruler-popup-menu t       ; get popup menu.
+        tabbar-ruler-popup-toolbar t    ; get popup toolbar
+        tabbar-ruler-popup-scrollbar nil)  ; show scroll-bar on mouse-move
   (require 'tabbar)
   (require 'tabbar-ruler)
   (setq tabbar-buffer-groups-function 'tabbar-ruler-projectile-tabbar-buffer-groups)
