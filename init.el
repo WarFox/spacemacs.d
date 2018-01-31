@@ -38,13 +38,17 @@ values."
      ;; Uncomment some layer names and press <SPC f e R> (Vim style) or
      ;; <M-m f e R> (Emacs style) to install them.
      ;; ----------------------------------------------------------------
-     ansible
+     (ansible :variables
+              ansible-auto-encrypt-decrypt nil)
      auto-completion
      better-defaults
      clojure
-     colors
+     (colors :variables
+             colors-colorize-identifiers t
+             colors-enable-nyan-cat-progress-bar (display-graphic-p))
      command-log
      common-lisp
+     confluence
      csv
      django
      dash
@@ -79,9 +83,11 @@ values."
      osx
      (python :variables
              python-enable-yapf-format-on-save t
+             python-test-runner 'pytest
              python-auto-set-local-pyenv-version 'on-project-switch)
      racket
-     ranger
+     (ranger :variables
+             ranger-show-literal nil)
      react
      restclient
      ruby
@@ -115,6 +121,7 @@ values."
    ;; packages, then consider creating a layer. You can also put the
    ;; configuration in `dotspacemacs/user-config'.
    dotspacemacs-additional-packages '(all-the-icons
+                                      atomic-chrome
                                       darcula-theme
                                       dracula-theme
                                       feature-mode
@@ -208,11 +215,15 @@ values."
    dotspacemacs-colorize-cursor-according-to-state t
    ;; Default font, or prioritized list of fonts. `powerline-scale' allows to
    ;; quickly tweak the mode-line size to make separators look not too crappy.
-   dotspacemacs-default-font '("SauceCodePro Nerd Font"
-                               :size 15
+   dotspacemacs-default-font '("Knack Nerd Font"
+                               :size 14
                                :weight normal
                                :width normal
-                               :powerline-scale 1.1)
+                               :powerline-scale 1.2)
+   ;; New mode-line config
+   dotspacemacs-mode-line-theme '(all-the-icons
+                                  :separator arrow
+                                  :separator-scale 1.5)
    ;; The leader key
    dotspacemacs-leader-key "SPC"
    ;; The key used for Emacs commands (M-x) (after pressing on the leader key).
@@ -367,14 +378,21 @@ executes.
 before packages are loaded. If you are unsure, you should try in setting them in
 `dotspacemacs/user-config' first."
 
+  ;; https://github.com/purcell/exec-path-from-shell
+  ;; (when (memq window-system '(mac ns x))
+    ;; (exec-path-from-shell-initialize))
+
+  ;; (add-to-list 'exec-path "/usr/local/bin")
+
   ;; add melpa-stable to archives
   (push '("melpa-stable" . "stable.melpa.org/packages/") configuration-layer--elpa-archives)
   (push '(ensime . "melpa-stable") package-pinned-packages)
   (add-to-list 'package-archives '("melpa" . "http://melpa.milkbox.net/packages/") t)
 
   ;; spell-checking use aspell and default to british language
-  (setq ispell-program-name "aspell")
-  (setq ispell-dictionary "british")
+  (setq ispell-program-name "aspell"
+        ispell-dictionary "british")
+
 )
 
 (defun dotspacemacs/user-config ()
@@ -385,12 +403,44 @@ This is the place where most of your configurations should be done. Unless it is
 explicitly specified that a variable should be set before a package is loaded,
 you should place your code here."
 
-  ;; M-3 is mapped to window 3, so map Super-3 to get £ sign
-  ;; (This is for Dvorak layout, UK layout may need to map # instead)
-  (global-set-key (kbd "s-3") '(lambda() (interactive) (insert "£")))
+  (setq dotspacemacs-zone-out-when-idle nil)
+  (atomic-chrome-start-server)
 
-  ;; Set deft-directory to Dropbox so it is in sync
-  (setq deft-directory "~/Dropbox/org-mode/deft")
+  ;; Cursor colours and shape
+  (setq evil-default-cursor (quote (t "#FFFF00"))
+        evil-visual-state-cursor '("#E2E3DF" box) ;; grey
+        evil-normal-state-cursor '("#FFBB33" box) ;; orange
+        evil-insert-state-cursor '("#20D304" bar)) ;; green
+
+  ;; M-3 is mapped to window 3, so map M-# to get £ sign GBP (pound sign)
+  ;; (This is for Dvorak layout, UK layout may need to map # instead)
+  (global-set-key (kbd "M-#") '(lambda() (interactive) (insert "£")))
+
+  ;; defaults
+  (setq-default
+   ;; map escape to "jk"
+   evil-escape-key-sequence "jk")
+
+   ;; Use arrows as separator for mode-line
+   ;; M-x spaceline-compile after changing this value
+   ;; powerline-default-separator 'arrow)
+   ;; separator is set with =:sperator= in variable =dotspacemacs-mode-line-theme=
+
+  (setq
+   ;; javascript
+   js2-basic-offset 2
+   js-indent-level 2
+   ;; langtool settings
+   langtool-language-tool-jar "/usr/local/Cellar/languagetool/3.9/libexec/languagetool-commandline.jar"
+   langtool-default-language "en-GB"
+   ;; multi-term
+   multi-term-scroll-show-maximum-output 't
+   multi-term-scroll-to-bottom-on-output 'this
+   ;; neo-tree icons
+   neo-theme (if (display-graphic-p) 'icons 'arrow)
+   neo-vc-integration '(face char)
+   ;; Set deft-directory to Dropbox so it is in sync
+   deft-directory "~/Dropbox/org-mode/deft")
 
   (with-eval-after-load 'org
     ;; here goes your Org config :)
@@ -403,11 +453,6 @@ you should place your code here."
           ;; #+REVEAL_ROOT: http://cdn.jsdelivr.net/reveal.js/3.0.0/
           org-reveal-root "http://cdn.jsdelivr.net/reveal.js/3.0.0/")
 
-    (add-hook 'org-mode-hook
-              (lambda ()
-                (message "org mode hook called")
-                (emoji-cheat-sheet-plus-display-mode -1)))
-
     ;; disable emoji mode for org-jira-mode
     (add-hook 'org-jira-mode-hook
               (lambda ()
@@ -417,6 +462,8 @@ you should place your code here."
     ;; org-mode hook
     (add-hook 'org-mode-hook
               (lambda()
+                (message "org mode hook called")
+                (emoji-cheat-sheet-plus-display-mode -1)
                 (add-to-list 'org-structure-template-alist '("t" "#+TITLE: ?") t)))
 
     ;; active Babel languages
@@ -432,7 +479,7 @@ you should place your code here."
        (shell . t)
        (sqlite . t)
        ))
-    )
+    );; with-eval-after-load 'org
 
   ;; Add projectile TODOs.org files to agenda
   (with-eval-after-load 'org-agenda
@@ -455,27 +502,20 @@ you should place your code here."
   ;; (setq tabbar-buffer-groups-function 'tabbar-buffer-groups)
   ;; (tabbar-ruler-group-by-projectile-project)
 
-  (setq-default
-   ;; Use arrows as separator for mode-line
-   ;; M-x spaceline-compile after changing this value
-   powerline-default-separator 'arrow)
-
-  (add-to-list 'exec-path "/usr/local/bin")
-
-  (setq
-   ensime-sbt-command "/usr/local/bin/sbt"
-   sbt:program-name "/usr/local/bin/sbt")
 
   ;; ensime
-  (setq ensime-startup-notification nil)
+  (setq
+   ensime-sbt-command "/usr/local/bin/sbt"
+   sbt:program-name "/usr/local/bin/sbt"
+   ensime-startup-notification nil)
 
   ;; ;; ensime scala mode
   ;; (add-hook 'scala-mode-hook
   ;;           (lambda ()
   ;;             (add-hook 'after-save-hook 'ensime-sbt-do-compile)))
 
-  (setq flycheck-scalastyle-jar "/usr/local/Cellar/scalastyle/0.8.0/libexec/scalastyle_2.11-0.8.0-batch.jar")
-  (setq flycheck-scalastylerc "/usr/local/etc/scalastyle_config.xml")
+  (setq flycheck-scalastyle-jar "/usr/local/Cellar/scalastyle/0.8.0/libexec/scalastyle_2.11-0.8.0-batch.jar"
+        flycheck-scalastylerc "/usr/local/etc/scalastyle_config.xml")
 
   (setq-default ensime-goto-test-config
     '(:test-class-names-fn ensime-goto-test--test-class-names
@@ -496,6 +536,9 @@ you should place your code here."
 
   ;; web-mode
   (add-to-list 'auto-mode-alist '("\\.swig\\'" . web-mode))
+  (setq web-mode-content-types-alist
+        '(("jsx" . "\\.js[x]?\\'")))
+
   (add-to-list 'auto-mode-alist '("\\.routes$" . play-routes-mode))
 
   (defun my/change-file-extension ()
@@ -538,20 +581,6 @@ you should place your code here."
   (spacemacs/declare-prefix "of" "file")
   (spacemacs/set-leader-keys "ofx" 'my/change-file-extension)
   (spacemacs/set-leader-keys "oh" 'my/hexo-blog)
-
-  ;; map escape to "jk"
-  (setq-default evil-escape-key-sequence "jk")
-
-  (setq langtool-language-tool-jar "/usr/local/Cellar/languagetool/3.9/libexec/languagetool-commandline.jar")
-  (setq langtool-default-language "en-GB")
-
-  ;; neo-tree icons
-  (setq neo-theme (if (display-graphic-p) 'icons 'arrow))
-  (setq neo-vc-integration '(face char))
-
-  ;; multi-term
-  (setq multi-term-scroll-show-maximum-output 't)
-  (setq multi-term-scroll-to-bottom-on-output 'this)
 
   ;; display time mode
   (display-time-mode t)
