@@ -1,6 +1,6 @@
 #+TITLE: Deepu Mohan Puthrote's Spacemacs configuration
 
-** Install
+* Install
 #+BEGIN_SRC shell
   git clone git@github.com:WarFox/spacemacs.d.git /clone/path
   ln -s /clone/path ~/.spacemacs.d/
