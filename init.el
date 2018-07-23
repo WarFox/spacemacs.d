@@ -76,7 +76,9 @@ This function should only modify configuration layer settings."
      latex
      (markdown :variables
                markdown-live-preview-engine 'vmd)
-     neotree
+     (neotree :variables
+              neo-theme (if (display-graphic-p) 'icons 'arrow)
+              neo-vc-integration 'face 'char)
      nginx
      (org :variables
           org-enable-github-support t
@@ -131,7 +133,6 @@ This function should only modify configuration layer settings."
    ;; Also include the dependencies as they will not be resolved automatically.
    dotspacemacs-additional-packages '(all-the-icons
                                       atomic-chrome
-                                      darcula-theme
                                       dracula-theme
                                       feature-mode
                                       gradle-mode
@@ -284,7 +285,8 @@ It should only modify the values of Spacemacs settings."
    ;; Press `SPC T n' to cycle to the next theme in the list (works great
    ;; with 2 themes variants, one dark and one light)
    dotspacemacs-themes '(spacemacs-dark
-                         spacemacs-light)
+                         spacemacs-light
+                         dracula)
 
    ;; Set the theme for the Spaceline. Supported themes are `spacemacs',
    ;; `all-the-icons', `custom', `vim-powerline' and `vanilla'. The first three
@@ -448,8 +450,6 @@ It should only modify the values of Spacemacs settings."
    '(:relative t
      :disabled-for-modes dired-mode
                          doc-view-mode
-                         markdown-mode
-                         org-mode
                          pdf-view-mode
                          text-mode
      :size-limit-kb 1000)
@@ -592,9 +592,6 @@ you should place your code here."
    ;; multi-term
    multi-term-scroll-show-maximum-output 't
    multi-term-scroll-to-bottom-on-output 'this
-   ;; neo-tree icons
-   neo-theme (if (display-graphic-p) 'icons 'arrow)
-   neo-vc-integration '(face char)
    ;; Set deft-directory to Dropbox so it is in sync
    deft-directory "~/Dropbox/org-mode/deft"
    ;; pytest fish configuration
