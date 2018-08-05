@@ -532,13 +532,21 @@ It should only modify the values of Spacemacs settings."
    dotspacemacs-pretty-docs t)
  )
 
+(defun dotspacemacs/user-env ()
+  "Environment variables setup.
+This function defines the environment variables for your Emacs session. By
+default it calls `spacemacs/load-spacemacs-env' which loads the environment
+variables declared in `~/.spacemacs.env' or `~/.spacemacs.d/.spacemacs.env'.
+See the header of this file for more information."
+  (spacemacs/load-spacemacs-env))
+
+
 (defun dotspacemacs/user-init ()
-  "Initialization function for user code.
-It is called immediately after `dotspacemacs/init', before layer configuration
-executes.
- This function is mostly useful for variables that need to be set
-before packages are loaded. If you are unsure, you should try in setting them in
-`dotspacemacs/user-config' first."
+  "Initialization for user code:
+This function is called immediately after `dotspacemacs/init', before layer
+configuration.
+It is mostly for variables that should be set before packages are loaded.
+If you are unsure, try setting them in `dotspacemacs/user-config' first."
 
   ;; https://github.com/purcell/exec-path-from-shell
   ;; (when (memq window-system '(mac ns x))
@@ -558,9 +566,9 @@ before packages are loaded. If you are unsure, you should try in setting them in
 
 (defun dotspacemacs/user-load ()
   "Library to load while dumping.
-This function is called while dumping Spacemacs configuration. You can
-`require' or `load' the libraries of your choice that will be included
-in the dump."
+This function is called only while dumping Spacemacs configuration. You can
+`require' or `load' the libraries of your choice that will be included in the
+dump."
   )
 
 (defun dotspacemacs/user-config ()
@@ -749,6 +757,8 @@ you should place your code here."
   (spacemacs/set-leader-keys "ofx" 'my/change-file-extension)
   (spacemacs/set-leader-keys "oh" 'my/hexo-blog)
 
+  (setq auth-sources '("~/.authinfo.gpg" "~/.authinfo" "~/.netrc"))
+
   ;; display time mode
   (display-time-mode t)
 
@@ -757,7 +767,7 @@ you should place your code here."
 )
 
 ;; Do not write anything past this comment. This is where Emacs will
-;; auto-generate custom variable definitions.(defun dotspacemacs/emacs-custom-settings ()
+;; auto-generate custom variable definitions.
 (defun dotspacemacs/emacs-custom-settings ()
   "Emacs custom settings.
 This is an auto-generated function, do not modify its content directly, use
