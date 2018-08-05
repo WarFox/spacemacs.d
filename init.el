@@ -38,8 +38,8 @@ This function should only modify configuration layer settings."
    '(
      ;; ----------------------------------------------------------------
      ;; Example of useful layers you may want to use right away.
-     ;; Uncomment some layer names and press <SPC f e R> (Vim style) or
-     ;; <M-m f e R> (Emacs style) to install them.
+     ;; Uncomment some layer names and press `SPC f e R' (Vim style) or
+     ;; `M-m f e R' (Emacs style) to install them.
      ;; ----------------------------------------------------------------
      (ansible :variables
               ansible-auto-encrypt-decrypt nil)
@@ -215,7 +215,7 @@ It should only modify the values of Spacemacs settings."
    ;; (default nil)
    dotspacemacs-verify-spacelpa-archives nil
 
-   ;; If non nil then spacemacs will check for updates at startup
+   ;; If non-nil then spacemacs will check for updates at startup
    ;; when the current branch is not `develop'. Note that checking for
    ;; new versions works via git commands, thus it calls GitHub services
    ;; whenever you start Emacs. (default nil)
@@ -236,23 +236,6 @@ It should only modify the values of Spacemacs settings."
 
    ;; If non-nil output loading progress in `*Messages*' buffer. (default nil)
    dotspacemacs-verbose-loading nil
-
-   ;; If non-nil then Spacemacs will import your PATH and environment variables
-   ;; from your default shell on startup. This is enabled by default for macOS
-   ;; users and X11 users.
-   dotspacemacs-import-env-vars-from-shell (and (display-graphic-p)
-                                                (or (eq system-type 'darwin)
-                                                    (eq system-type 'gnu/linux)
-                                                    (eq window-system 'x)))
-
-   ;; If nil then use the default shell is used to fetch the environment
-   ;; variables. Set this variable to a different shell executable path to
-   ;; import the environment variables from this shell. Note that
-   ;; `file-shell-name' is preserved and always points to the default shell. For
-   ;; instance to use your fish shell environment variables set this variable to
-   ;; `/usr/local/bin/fish'.
-   ;; (default nil)
-   dotspacemacs-import-env-vars-shell-file-name "/usr/local/bin/fish"
 
    ;; Specify the startup banner. Default value is `official', it displays
    ;; the official spacemacs logo. An integer value is the index of text
@@ -284,9 +267,9 @@ It should only modify the values of Spacemacs settings."
    ;; List of themes, the first of the list is loaded when spacemacs starts.
    ;; Press `SPC T n' to cycle to the next theme in the list (works great
    ;; with 2 themes variants, one dark and one light)
-   dotspacemacs-themes '(spacemacs-dark
-                         spacemacs-light
-                         dracula)
+   dotspacemacs-themes '(dracula
+                         spacemacs-dark
+                         spacemacs-light)
 
    ;; Set the theme for the Spaceline. Supported themes are `spacemacs',
    ;; `all-the-icons', `custom', `vim-powerline' and `vanilla'. The first three
@@ -303,6 +286,7 @@ It should only modify the values of Spacemacs settings."
 
    ;; Default font, or prioritized list of fonts. `powerline-scale' allows to
    ;; quickly tweak the mode-line size to make separators look not too crappy.
+
    dotspacemacs-default-font '("Source Code Pro"
                                :size 13
                                :weight normal
@@ -311,7 +295,8 @@ It should only modify the values of Spacemacs settings."
    ;; The leader key (default "SPC")
    dotspacemacs-leader-key "SPC"
 
-   ;; The key used for Emacs commands (M-x) (after pressing on the leader key).
+
+   ;; The key used for Emacs commands `M-x' (after pressing on the leader key).
    ;; (default "SPC")
    dotspacemacs-emacs-command-key "SPC"
 
@@ -331,9 +316,9 @@ It should only modify the values of Spacemacs settings."
    dotspacemacs-major-mode-emacs-leader-key "C-M-m"
 
    ;; These variables control whether separate commands are bound in the GUI to
-   ;; the key pairs C-i, TAB and C-m, RET.
-   ;; Setting it to a non-nil value, allows for separate commands under <C-i>
-   ;; and TAB or <C-m> and RET.
+   ;; the key pairs `C-i', `TAB' and `C-m', `RET'.
+   ;; Setting it to a non-nil value, allows for separate commands under `C-i'
+   ;; and TAB or `C-m' and `RET'.
    ;; In the terminal, these pairs are generally indistinguishable, so this only
    ;; works in the GUI. (default nil)
    dotspacemacs-distinguish-gui-tab nil
@@ -341,11 +326,11 @@ It should only modify the values of Spacemacs settings."
    ;; Name of the default layout (default "Default")
    dotspacemacs-default-layout-name "Default"
 
-   ;; If non nil the default layout name is displayed in the mode-line.
+   ;; If non-nil the default layout name is displayed in the mode-line.
    ;; (default nil)
    dotspacemacs-display-default-layout nil
 
-   ;; If non nil then the last auto saved layouts are resume automatically upon
+   ;; If non-nil then the last auto saved layouts are resumed automatically upon
    ;; start. (default nil)
    dotspacemacs-auto-resume-layouts nil
 
@@ -389,20 +374,20 @@ It should only modify the values of Spacemacs settings."
    ;; displayed in the current window. (default nil)
    dotspacemacs-switch-to-buffer-prefers-purpose nil
 
-   ;; If non nil a progress bar is displayed when spacemacs is loading. This
+   ;; If non-nil a progress bar is displayed when spacemacs is loading. This
    ;; may increase the boot time on some systems and emacs builds, set it to
    ;; nil to boost the loading time. (default t)
    dotspacemacs-loading-progress-bar t
 
-   ;; If non nil the frame is fullscreen when Emacs starts up. (default nil)
+   ;; If non-nil the frame is fullscreen when Emacs starts up. (default nil)
    ;; (Emacs 24.4+ only)
    dotspacemacs-fullscreen-at-startup nil
 
-   ;; If non nil `spacemacs/toggle-fullscreen' will not use native fullscreen.
+   ;; If non-nil `spacemacs/toggle-fullscreen' will not use native fullscreen.
    ;; Use to disable fullscreen animations in OSX. (default nil)
    dotspacemacs-fullscreen-use-non-native nil
 
-   ;; If non nil the frame is maximized when Emacs starts up.
+   ;; If non-nil the frame is maximized when Emacs starts up.
    ;; Takes effect only if `dotspacemacs-fullscreen-at-startup' is nil.
    ;; (default nil) (Emacs 24.4+ only)
    dotspacemacs-maximized-at-startup t
@@ -417,10 +402,10 @@ It should only modify the values of Spacemacs settings."
    ;; Transparency can be toggled through `toggle-transparency'. (default 90)
    dotspacemacs-inactive-transparency 90
 
-   ;; If non nil show the titles of transient states. (default t)
+   ;; If non-nil show the titles of transient states. (default t)
    dotspacemacs-show-transient-state-title t
 
-   ;; If non nil show the color guide hint for transient state keys. (default t)
+   ;; If non-nil show the color guide hint for transient state keys. (default t)
    dotspacemacs-show-transient-state-color-guide t
 
    ;; If non-nil unicode symbols are displayed in the mode line.
@@ -451,14 +436,14 @@ It should only modify the values of Spacemacs settings."
      :disabled-for-modes dired-mode
                          doc-view-mode
                          pdf-view-mode
-                         text-mode
      :size-limit-kb 1000)
 
    ;; Code folding method. Possible values are `evil' and `origami'.
    ;; (default 'evil)
    dotspacemacs-folding-method 'evil
 
-   ;; If non-nil smartparens-strict-mode will be enabled in programming modes.
+
+   ;; If non-nil `smartparens-strict-mode' will be enabled in programming modes.
    ;; (default nil)
    dotspacemacs-smartparens-strict-mode nil
 
@@ -529,8 +514,7 @@ It should only modify the values of Spacemacs settings."
    ;; Run `spacemacs/prettify-org-buffer' when
    ;; visiting README.org files of Spacemacs.
    ;; (default nil)
-   dotspacemacs-pretty-docs t)
- )
+   dotspacemacs-pretty-docs t))
 
 (defun dotspacemacs/user-env ()
   "Environment variables setup.
@@ -539,7 +523,6 @@ default it calls `spacemacs/load-spacemacs-env' which loads the environment
 variables declared in `~/.spacemacs.env' or `~/.spacemacs.d/.spacemacs.env'.
 See the header of this file for more information."
   (spacemacs/load-spacemacs-env))
-
 
 (defun dotspacemacs/user-init ()
   "Initialization for user code:
@@ -553,16 +536,14 @@ If you are unsure, try setting them in `dotspacemacs/user-config' first."
     ;; (exec-path-from-shell-initialize))
 
   (add-to-list 'exec-path "/usr/local/bin")
-
   ;; add melpa-stable to archives
-  (push '("melpa-stable" . "stable.melpa.org/packages/") configuration-layer--elpa-archives)
+  (push '("melpa-stable" . "stable.melpa.org/packages/") configuration-layer-elpa-archives)
   (push '(ensime . "melpa-stable") package-pinned-packages)
   (add-to-list 'package-archives '("melpa" . "http://melpa.milkbox.net/packages/") t)
 
   ;; spell-checking use aspell and default to british language
   (setq ispell-program-name "aspell"
-        ispell-dictionary "british")
-)
+        ispell-dictionary "british"))
 
 (defun dotspacemacs/user-load ()
   "Library to load while dumping.
@@ -704,11 +685,13 @@ you should place your code here."
   ;; prettier for .js and .jsx
   (add-hook 'js2-mode-hook 'prettier-js-mode)
   (add-hook 'web-mode-hook 'prettier-js-mode)
+
   (defun enable-minor-mode (my-pair)
     "Enable minor mode if filename match the regexp.  MY-PAIR is a cons cell (regexp . minor-mode)."
     (if (buffer-file-name)
         (if (string-match (car my-pair) buffer-file-name)
             (funcall (cdr my-pair)))))
+
   (add-hook 'web-mode-hook #'(lambda ()
                                (enable-minor-mode
                                 '("\\.jsx?\\'" . prettier-js-mode))))
@@ -763,28 +746,7 @@ you should place your code here."
   (display-time-mode t)
 
   ;; load local.el file
-  (load "~/.spacemacs.d/local")
-)
+  (load "~/.spacemacs.d/local"))
 
 ;; Do not write anything past this comment. This is where Emacs will
 ;; auto-generate custom variable definitions.
-(defun dotspacemacs/emacs-custom-settings ()
-  "Emacs custom settings.
-This is an auto-generated function, do not modify its content directly, use
-Emacs customize menu instead.
-This function is called at the very end of Spacemacs initialization."
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(package-selected-packages
-   (quote
-    (auctex-latexmk yasnippet-snippets yapfify yaml-mode xterm-color xkcd ws-butler winum which-key wgrep web-mode web-beautify volatile-highlights vmd-mode vimrc-mode vi-tilde-fringe vagrant-tramp vagrant uuidgen use-package unfill typit toc-org tagedit tabbar-ruler symon swift-mode sudoku string-inflection sql-indent spotify spaceline-all-the-icons smex smeargle slime-company slim-mode slack shell-pop scss-mode sayid sass-mode rvm ruby-tools ruby-test-mode ruby-refactor ruby-hash-syntax rubocop rspec-mode robe rjsx-mode reveal-in-osx-finder restart-emacs rbenv ranger rainbow-mode rainbow-identifiers rainbow-delimiters racket-mode pyvenv pytest pyenv-mode py-isort pug-mode projectile-rails prettier-js popwin pony-mode play-routes-mode pippel pipenv pip-requirements persp-mode password-generator paradox pacmacs ox-reveal ox-gfm overseer osx-trash osx-dictionary orgit org-projectile org-present org-pomodoro org-mime org-jira org-download org-bullets org-brain open-junk-file ob-restclient ob-ipython ob-http ob-elixir noflet nginx-mode neotree nameless mwim mvn multi-term move-text mmm-mode minitest meghanada maven-test-mode markdown-toc magithub magit-svn magit-gitflow magit-gh-pulls lorem-ipsum livid-mode live-py-mode link-hint launchctl langtool json-navigator js2-refactor js-doc jinja2-mode ivy-yasnippet ivy-xref ivy-purpose ivy-hydra intero insert-shebang indent-guide importmagic impatient-mode hungry-delete hlint-refactor hl-todo hindent highlight-parentheses highlight-numbers highlight-indentation hexo helm-make haskell-snippets groovy-mode groovy-imports gradle-mode google-translate golden-ratio godoctor go-tag go-rename go-impl go-guru go-gen-test go-fill-struct go-eldoc gnuplot gitignore-mode github-search github-clone gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link git-gutter-fringe git-gutter-fringe+ gist gh-md geiser fuzzy font-lock+ flyspell-correct-ivy flycheck-pos-tip flycheck-mix flycheck-haskell flycheck-elm flycheck-credo flycheck-bashate flx-ido fish-mode fill-column-indicator feature-mode fancy-battery eyebrowse expand-region evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-org evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-magit evil-lisp-state evil-lion evil-indent-plus evil-iedit-state evil-goggles evil-exchange evil-escape evil-ediff evil-cleverparens evil-args evil-anzu eshell-z eshell-prompt-extras esh-help erlang ensime engine-mode emoji-cheat-sheet-plus emmet-mode elm-mode elisp-slime-nav ein editorconfig dumb-jump dracula-theme dockerfile-mode docker diminish diff-hl deft dash-at-point darcula-theme dante dactyl-mode cython-mode csv-mode counsel-projectile counsel-dash counsel-css confluence company-web company-terraform company-tern company-statistics company-shell company-restclient company-go company-ghci company-ghc company-emoji company-emacs-eclim company-cabal company-auctex company-ansible company-anaconda common-lisp-snippets command-log-mode column-enforce-mode color-theme-sanityinc-solarized color-identifiers-mode cmm-mode clojure-snippets clojure-cheatsheet clj-refactor clean-aindent-mode cider-eval-sexp-fu chruby centered-cursor-mode bundler browse-at-remote auto-yasnippet auto-highlight-symbol auto-dictionary auto-compile atomic-chrome ansible-doc ansible alchemist aggressive-indent ace-window ace-link ac-ispell 2048-game))))
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- )
-)
