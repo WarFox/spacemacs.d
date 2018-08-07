@@ -78,7 +78,7 @@ This function should only modify configuration layer settings."
                markdown-live-preview-engine 'vmd)
      (neotree :variables
               neo-theme (if (display-graphic-p) 'icons 'arrow)
-              neo-vc-integration 'face 'char)
+              neo-vc-integration 'face)
      nginx
      (org :variables
           org-enable-github-support t
@@ -135,6 +135,7 @@ This function should only modify configuration layer settings."
                                       atomic-chrome
                                       dracula-theme
                                       feature-mode
+                                      org-jira
                                       gradle-mode
                                       groovy-mode
                                       helm-gitignore
@@ -576,7 +577,7 @@ you should place your code here."
    js2-basic-offset 2
    js-indent-level 2
    ;; langtool settings
-   langtool-language-tool-jar "/usr/local/Cellar/languagetool/4.1/libexec/languagetool-commandline.jar"
+   langtool-language-tool-jar "/usr/local/Cellar/languagetool/4.2/libexec/languagetool-commandline.jar"
    langtool-default-language "en-GB"
    ;; multi-term
    multi-term-scroll-show-maximum-output 't
