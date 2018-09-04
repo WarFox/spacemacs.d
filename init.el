@@ -1,4 +1,4 @@
-;; -*- mode: emacs-lisp -*-
+;; -*- mode: emacs-lisp; lexical-binding: t -*-
 ;; This file is loaded by Spacemacs at startup.
 ;; It must be stored in your home directory.
 
@@ -43,7 +43,9 @@ This function should only modify configuration layer settings."
      ;; ----------------------------------------------------------------
      (ansible :variables
               ansible-auto-encrypt-decrypt nil)
-     auto-completion
+     (auto-completion :variables
+                      auto-completion-enable-snippets-in-popup t
+                      auto-completion-enable-help-tooltip t)
      better-defaults
      clojure
      (colors :variables
@@ -96,7 +98,9 @@ This function should only modify configuration layer settings."
              ranger-show-literal nil)
      react
      restclient
-     ruby
+     (ruby :variables
+           ruby-version-manager 'rbenv
+           ruby-test-runner 'rspec)
      ruby-on-rails
      (scala :variables
             scala-auto-insert-asterisk-in-comments t
@@ -110,12 +114,15 @@ This function should only modify configuration layer settings."
             shell-default-position 'bottom)
      shell-scripts
      slack
-     spell-checking
+     (spell-checking :variables
+                     spell-checking-enable-by-default nil
+                     enable-flyspell-auto-completion nil)
      spotify
      sql
      swift
      syntax-checking
-     (terraform :variables terraform-auto-format-on-save t)
+     (terraform :variables
+                terraform-auto-format-on-save t)
      vagrant
      version-control
      vimscript
@@ -133,15 +140,17 @@ This function should only modify configuration layer settings."
    ;; Also include the dependencies as they will not be resolved automatically.
    dotspacemacs-additional-packages '(all-the-icons
                                       atomic-chrome
+                                      counsel-spotify
                                       dracula-theme
+                                      exec-path-from-shell
                                       feature-mode
-                                      org-jira
                                       gradle-mode
                                       groovy-mode
                                       helm-gitignore
                                       hexo
                                       langtool
                                       meghanada
+                                      org-jira
                                       play-routes-mode
                                       prettier-js
                                       tabbar
@@ -287,15 +296,13 @@ It should only modify the values of Spacemacs settings."
 
    ;; Default font, or prioritized list of fonts. `powerline-scale' allows to
    ;; quickly tweak the mode-line size to make separators look not too crappy.
-
-   dotspacemacs-default-font '("Source Code Pro"
-                               :size 13
+   dotspacemacs-default-font '("SauceCodePro Nerd Font"
+                               :size 14
                                :weight normal
                                :width normal)
 
    ;; The leader key (default "SPC")
    dotspacemacs-leader-key "SPC"
-
 
    ;; The key used for Emacs commands `M-x' (after pressing on the leader key).
    ;; (default "SPC")
@@ -353,9 +360,9 @@ It should only modify the values of Spacemacs settings."
    ;; Maximum number of rollback slots to keep in the cache. (default 5)
    dotspacemacs-max-rollback-slots 5
 
-   ;; If non-nil, the paste transient-state is enabled. While enabled, pressing
-   ;; `p' several times cycles through the elements in the `kill-ring'.
-   ;; (default nil)
+   ;; If non-nil, the paste transient-state is enabled. While enabled, after you
+   ;; paste something, pressing `C-j' and `C-k' several times cycles through the
+   ;; elements in the `kill-ring'. (default nil)
    dotspacemacs-enable-paste-transient-state nil
 
    ;; Which-key delay in seconds. The which-key buffer is the popup listing
@@ -442,7 +449,6 @@ It should only modify the values of Spacemacs settings."
    ;; Code folding method. Possible values are `evil' and `origami'.
    ;; (default 'evil)
    dotspacemacs-folding-method 'evil
-
 
    ;; If non-nil `smartparens-strict-mode' will be enabled in programming modes.
    ;; (default nil)
@@ -534,9 +540,11 @@ If you are unsure, try setting them in `dotspacemacs/user-config' first."
 
   ;; https://github.com/purcell/exec-path-from-shell
   ;; (when (memq window-system '(mac ns x))
-    ;; (exec-path-from-shell-initialize))
-
+  ;;   (exec-path-from-shell-initialize))
   (add-to-list 'exec-path "/usr/local/bin")
+
+  (add-hook 'term-mode-hook 'toggle-truncate-lines)
+
   ;; add melpa-stable to archives
   (push '("melpa-stable" . "stable.melpa.org/packages/") configuration-layer-elpa-archives)
   (push '(ensime . "melpa-stable") package-pinned-packages)
@@ -554,12 +562,11 @@ dump."
   )
 
 (defun dotspacemacs/user-config ()
-  "Configuration function for user code.
-This function is called at the very end of Spacemacs initialization after
-layers configuration.
-This is the place where most of your configurations should be done. Unless it is
-explicitly specified that a variable should be set before a package is loaded,
-you should place your code here."
+  "Configuration for user code:
+This function is called at the very end of Spacemacs startup, after layer
+configuration.
+Put your configuration code here, except for variables that should be set
+before packages are loaded."
 
   (atomic-chrome-start-server)
 
@@ -573,6 +580,10 @@ you should place your code here."
    evil-escape-key-sequence "jk")
 
   (setq
+   ;; ;; magit
+   magit-repository-directories
+         `(("~/Workspace/" . 3)
+           (,user-emacs-directory . 1))
    ;; javascript
    js2-basic-offset 2
    js-indent-level 2
@@ -622,6 +633,7 @@ you should place your code here."
        (restclient . t)
        (scala . t)
        (shell . t)
+       (sql . t)
        (sqlite . t)
        ))
     );; with-eval-after-load 'org
