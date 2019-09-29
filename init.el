@@ -42,57 +42,69 @@ This function should only modify configuration layer settings."
      ;; `M-m f e R' (Emacs style) to install them.
      ;; ----------------------------------------------------------------
      (ansible :variables
-              ansible-auto-encrypt-decrypt nil)
+              ansible-auto-encrypt-decrypt t)
      (auto-completion :variables
                       auto-completion-enable-snippets-in-popup t
                       auto-completion-enable-help-tooltip t)
      better-defaults
-     clojure
-     (colors :variables
-             colors-colorize-identifiers t
-             colors-enable-nyan-cat-progress-bar (display-graphic-p))
+     (clojure :variables
+              clojure-enable-fancify-symbols nil
+              clojure-enable-sayid t
+              clojure-enable-linters t
+              clojure-enable-clj-refactor t)
+     colors
      command-log
      common-lisp
      confluence
      csv
-     django
+     dap ; debug adapter protocol
      dash
      deft
      docker
      elixir
      elm
-     erlang
      emacs-lisp
      emoji
+     erlang
      games
      git
      github
      go
      haskell
      html
-     ivy
-     ipython-notebook
      imenu-list
-     java
+     ivy
+     (java :variables
+           java-backend 'lsp)
      javascript
      latex
+     lsp
      (markdown :variables
+               markdown-fmt-tool 'prettier
                markdown-live-preview-engine 'vmd)
-     (neotree :variables
-              neo-theme (if (display-graphic-p) 'icons 'arrow)
-              neo-vc-integration 'face)
+     (multiple-cursors :variables
+                       multiple-cursors-backend 'evil-mc)
+     neotree
      nginx
      (org :variables
           org-enable-github-support t
+          org-enable-bootstrap-support t
           org-enable-reveal-js-support t
-          org-projectile-per-project-filepath "TODOs.org"
+          org-want-todo-bindings t
+          org-projectile-file "TODOs.org"
           org-projectile-projects-file "~/Dropbox/org-mode/Projects.org")
-     org-jira
      osx
+     prettier
      (python :variables
-             python-enable-yapf-format-on-save t
+             python-backend 'lsp
+             python-lsp-server 'pyls
+             python-formatter 'black
+             python-format-on-save t
+             python-pipenv-activate t
              python-test-runner 'pytest
-             python-auto-set-local-pyenv-version 'on-project-switch)
+             python-sort-imports-on-save t
+             python-auto-set-local-pyvenv-virtualenv 'on-visit ;; Automatically set pyvenv virtualenv from \".venv\".)
+             python-auto-set-local-pyenv-version 'on-visit)
      racket
      (ranger :variables
              ranger-show-literal nil)
@@ -100,13 +112,16 @@ This function should only modify configuration layer settings."
      restclient
      (ruby :variables
            ruby-version-manager 'rbenv
-           ruby-test-runner 'rspec)
+           ruby-test-runner 'rspec
+           ruby-enable-enh-ruby-mode t)
      ruby-on-rails
+     rust
      (scala :variables
             scala-auto-insert-asterisk-in-comments t
             scala-indent:use-javadoc-style t)
      scheme
      search-engine
+     semantic
      (shell :variables
             shell-default-height 30
             shell-default-shell 'multi-term
@@ -118,18 +133,21 @@ This function should only modify configuration layer settings."
                      spell-checking-enable-by-default nil
                      enable-flyspell-auto-completion nil)
      spotify
-     sql
+     (sql :variables
+          sql-capitalize-keywords t
+          sql-auto-indent t)
      swift
      syntax-checking
      (terraform :variables
                 terraform-auto-format-on-save t)
      vagrant
-     version-control
+     (version-control :variables
+                      version-control-diff-tool 'diff-hl
+                      version-control-diff-side 'left)
      vimscript
      vinegar
      xkcd
-     yaml
-     )
+     yaml)
 
    ;; List of additional packages that will be installed without being
    ;; wrapped in a layer. If you need some configuration for these
@@ -140,21 +158,18 @@ This function should only modify configuration layer settings."
    ;; Also include the dependencies as they will not be resolved automatically.
    dotspacemacs-additional-packages '(all-the-icons
                                       atomic-chrome
-                                      counsel-spotify
-                                      dracula-theme
+                                      doom-themes
+                                      ejc-sql
+                                      eterm-256color
                                       exec-path-from-shell
                                       feature-mode
+                                      github-review
                                       gradle-mode
                                       groovy-mode
-                                      helm-gitignore
                                       hexo
                                       langtool
-                                      meghanada
-                                      org-jira
-                                      play-routes-mode
-                                      prettier-js
-                                      tabbar
-                                      tabbar-ruler)
+                                      sqlup-mode
+                                      format-sql)
 
    ;; A list of packages that cannot be updated.
    dotspacemacs-frozen-packages '()
@@ -242,7 +257,7 @@ It should only modify the values of Spacemacs settings."
    ;; with `:variables' keyword (similar to layers). Check the editing styles
    ;; section of the documentation for details on available variables.
    ;; (default 'vim)
-   dotspacemacs-editing-style 'vim
+   dotspacemacs-editing-style 'hybrid
 
    ;; If non-nil output loading progress in `*Messages*' buffer. (default nil)
    dotspacemacs-verbose-loading nil
@@ -277,18 +292,18 @@ It should only modify the values of Spacemacs settings."
    ;; List of themes, the first of the list is loaded when spacemacs starts.
    ;; Press `SPC T n' to cycle to the next theme in the list (works great
    ;; with 2 themes variants, one dark and one light)
-   dotspacemacs-themes '(dracula
+   dotspacemacs-themes '(doom-one
                          spacemacs-dark
                          spacemacs-light)
 
    ;; Set the theme for the Spaceline. Supported themes are `spacemacs',
-   ;; `all-the-icons', `custom', `vim-powerline' and `vanilla'. The first three
-   ;; are spaceline themes. `vanilla' is default Emacs mode-line. `custom' is a
-   ;; user defined themes, refer to the DOCUMENTATION.org for more info on how
-   ;; to create your own spaceline theme. Value can be a symbol or list with\
-   ;; additional properties.
+   ;; `all-the-icons', `custom', `doom', `vim-powerline' and `vanilla'. The
+   ;; first three are spaceline themes. `doom' is the doom-emacs mode-line.
+   ;; `vanilla' is default Emacs mode-line. `custom' is a user defined themes,
+   ;; refer to the DOCUMENTATION.org for more info on how to create your own
+   ;; spaceline theme. Value can be a symbol or list with additional properties.
    ;; (default '(spacemacs :separator wave :separator-scale 1.5))
-   dotspacemacs-mode-line-theme '(spacemacs :separator arrow :separator-scale 1.5)
+   dotspacemacs-mode-line-theme '(doom :separator arrow ) ; :seperator-scale 1.5)
 
    ;; If non-nil the cursor color matches the state color in GUI Emacs.
    ;; (default t)
@@ -296,8 +311,8 @@ It should only modify the values of Spacemacs settings."
 
    ;; Default font, or prioritized list of fonts. `powerline-scale' allows to
    ;; quickly tweak the mode-line size to make separators look not too crappy.
-   dotspacemacs-default-font '("SauceCodePro Nerd Font"
-                               :size 14
+   dotspacemacs-default-font '("SauceCodePro Nerd Font Mono"
+                               :size 16
                                :weight normal
                                :width normal)
 
@@ -501,7 +516,7 @@ It should only modify the values of Spacemacs settings."
    ;; %z - mnemonics of buffer, terminal, and keyboard coding systems
    ;; %Z - like %z, but including the end-of-line format
    ;; (default "%I@%S")
-   dotspacemacs-frame-title-format "%I@%S"
+   dotspacemacs-frame-title-format "%I@%S [%t] %a"
 
    ;; Format specification for setting the icon title format
    ;; (default nil - same as frame-title-format)
@@ -558,8 +573,7 @@ If you are unsure, try setting them in `dotspacemacs/user-config' first."
   "Library to load while dumping.
 This function is called only while dumping Spacemacs configuration. You can
 `require' or `load' the libraries of your choice that will be included in the
-dump."
-  )
+dump.")
 
 (defun dotspacemacs/user-config ()
   "Configuration for user code:
@@ -568,64 +582,95 @@ configuration.
 Put your configuration code here, except for variables that should be set
 before packages are loaded."
 
-  (atomic-chrome-start-server)
+  ;; doom theme start
+  (use-package doom-themes
+    :config
+    ;; Enable flashing mode-line on errors
+    (doom-themes-visual-bell-config)
+    ;; Enable custom neotree theme (all-the-icons must be installed!)
+    (doom-themes-neotree-config))
+    ;; Corrects (and improves) org-mode's native fontification.
+    ;; (doom-themes-org-config))
+
+  ;; frame
+  (add-to-list 'default-frame-alist
+               '(ns-transparent-titlebar . t))
+
+  (add-to-list 'default-frame-alist
+               '(ns-appearance . dark)) ;; or light - depending on your theme
+
+
+  ;; Atomic chrome
+  (use-package atomic-chrome
+    :init
+    ;; (setq atomic-chrome-ghost-text-port 4001)
+    :config
+    (atomic-chrome-start-server))
 
   ;; M-3 is mapped to window 3, so map M-# to get £ sign GBP (pound sign)
   ;; (This is for Dvorak layout, UK layout may need to map # instead)
-  (global-set-key (kbd "M-#") '(lambda() (interactive) (insert "£")))
+  ;; (global-set-key (kbd "M-#") '(lambda() (interactive) (insert "£")))
 
-  ;; defaults
-  (setq-default
-   ;; map escape to "jk"
-   evil-escape-key-sequence "jk")
+  ;; This work for british layout
+  ;; (global-set-key (kbd "M-£") '(lambda() (interactive) (insert "#")))
+  ;; (define-key winum-keymap "\M-3" nil)
+  ;; (global-set-key (kbd "M-3")(lambda () (interactive) (insert "#")))
+
+  (setq ns-alternate-modifier 'meta
+        ns-right-alternate-modifier 'none)
+
+  (defun my/langtool--version ()
+    (nth 2 (split-string (shell-command-to-string "languagetool --version"))))
+
+  ;; Change evil-hybrid-state-cursor cursor to box
+  (spacemacs/add-evil-cursor "hybrid" "SkyBlue2" 'box)
 
   (setq
-   ;; ;; magit
+   evil-escape-key-sequence "jk"
+   ;; magit
    magit-repository-directories
-         `(("~/Workspace/" . 3)
-           (,user-emacs-directory . 1))
+   `(("~/Workspace/" . 3)
+     (,user-emacs-directory . 1))
    ;; javascript
-   js2-basic-offset 2
+   js2-basic-offset 4
    js-indent-level 2
    ;; langtool settings
-   langtool-language-tool-jar "/usr/local/Cellar/languagetool/4.2/libexec/languagetool-commandline.jar"
+   langtool-language-tool-jar (format "/usr/local/Cellar/languagetool/%s/libexec/languagetool-commandline.jar" (my/langtool--version))
    langtool-default-language "en-GB"
    ;; multi-term
    multi-term-scroll-show-maximum-output 't
    multi-term-scroll-to-bottom-on-output 'this
    ;; Set deft-directory to Dropbox so it is in sync
    deft-directory "~/Dropbox/org-mode/deft"
+
+   ;; Projectile disable caching
+   projectile-enable-caching t
+
    ;; pytest fish configuration
-   pytest-cmd-format-string "cd %s; and %s %s %s")
+   ;; pytest-cmd-format-string "cd %s; and  %s %s %s"
+   ;; sh configuration
+   pytest-cmd-format-string "cd %s &  %s %s %s"
+
+   ;; Set shell
+   shell-file-name "/bin/sh"
+
+   ;; org-mode
+   org-display-custom-times t
+   org-directory "~/Dropbox/org-mode"
+   org-time-stamp-custom-formats '("<%d/%m/%Y %a>" . "<%d/%m/%Y %a %H:%M>")
+   ;; Override this on each org-file by adding
+   ;; #+REVEAL_ROOT: http://cdn.jsdelivr.net/reveal.js/3.1.0/
+   org-reveal-root "https://cdn.jsdelivr.net/npm/reveal.js/")
 
   (with-eval-after-load 'org
     ;; here goes your Org config :)
     ;; to avoid conflicts with the org shipped with emacs
-    ;; ....
-    (setq-default org-display-custom-times t)
-    (setq org-directory "~/Dropbox/org-mode"
-          org-time-stamp-custom-formats '("<%d/%m/%Y %a>" . "<%d/%m/%Y %a %H:%M>")
-          ;; Override this on each org-file by adding
-          ;; #+REVEAL_ROOT: http://cdn.jsdelivr.net/reveal.js/3.1.0/
-          org-reveal-root "https://cdn.jsdelivr.net/npm/reveal.js/")
-
-    ;; disable emoji mode for org-jira-mode
-    (add-hook 'org-jira-mode-hook
-              (lambda ()
-                (message "org jira mode hook called")
-                (emoji-cheat-sheet-plus-display-mode -1)))
-
-    ;; org-mode hook
-    (add-hook 'org-mode-hook
-              (lambda()
-                (message "org mode hook called")
-                (emoji-cheat-sheet-plus-display-mode -1)
-                (add-to-list 'org-structure-template-alist '("t" "#+TITLE: ?") t)))
 
     ;; active Babel languages
     (org-babel-do-load-languages
      'org-babel-load-languages
      '(
+       (clojure . t)
        (emacs-lisp . t)
        (http . t)
        (lisp . t)
@@ -634,9 +679,8 @@ before packages are loaded."
        (scala . t)
        (shell . t)
        (sql . t)
-       (sqlite . t)
-       ))
-    );; with-eval-after-load 'org
+       (sqlite . t))))
+    ;; with-eval-after-load 'org
 
   ;; Add projectile TODOs.org files to agenda
   (with-eval-after-load 'org-agenda
@@ -645,83 +689,29 @@ before packages are loaded."
                                    (org-projectile-todo-files)))
     (push (org-projectile-project-todo-entry) org-capture-templates))
 
-  (with-eval-after-load 'org-jira
-    (setq org-jira-working-dir "~/Dropbox/org-mode/org-jira"))
-
-  (setq tabbar-ruler-global-tabbar t    ; get tabbar
-        tabbar-ruler-global-ruler nil   ; get global ruler
-        tabbar-ruler-popup-menu t       ; get popup menu.
-        tabbar-ruler-popup-toolbar t    ; get popup toolbar
-        tabbar-ruler-popup-scrollbar nil)  ; show scroll-bar on mouse-move
-  (require 'tabbar)
-  (require 'tabbar-ruler)
-  (setq tabbar-buffer-groups-function 'tabbar-ruler-projectile-tabbar-buffer-groups)
-  ;; (setq tabbar-buffer-groups-function 'tabbar-buffer-groups)
-  ;; (tabbar-ruler-group-by-projectile-project)
-
-  ;; ensime
-  (setq
-   ensime-sbt-command "/usr/local/bin/sbt"
-   sbt:program-name "/usr/local/bin/sbt"
-   ensime-startup-notification nil)
-
-  ;; ;; ensime scala mode
-  ;; (add-hook 'scala-mode-hook
-  ;;           (lambda ()
-  ;;             (add-hook 'after-save-hook 'ensime-sbt-do-compile)))
-
-  (setq flycheck-scalastyle-jar "/usr/local/Cellar/scalastyle/0.8.0/libexec/scalastyle_2.11-0.8.0-batch.jar"
-        flycheck-scalastylerc "/usr/local/etc/scalastyle_config.xml")
-
-  (setq-default ensime-goto-test-config
-    '(:test-class-names-fn ensime-goto-test--test-class-names
-                           :test-class-suffixes ( "Test" "Spec" "Check" "Specification")
-                           :impl-class-name-fn  ensime-goto-test--impl-class-name
-                           :impl-to-test-dir-fn ensime-goto-test--impl-to-test-dir
-                           :is-test-dir-fn      ensime-goto-test--is-test-dir
-                           :test-template-fn    ensime-goto-test--test-template-scalatest-1))
-
-  (add-hook 'java-mode-hook
-            (lambda ()
-              (meghanada-mode t)
-              (gradle-mode t)
-              (add-hook 'before-save-hook 'meghanada-code-beautify-before-save)))
-  (add-hook 'groovy-mode-hook
-            (lambda ()
-              (gradle-mode t)))
-
   ;; web-mode
   (add-to-list 'auto-mode-alist '("\\.swig\\'" . web-mode))
   (setq web-mode-content-types-alist
         '(("jsx" . "\\.js[x]?\\'")))
 
-  ;; prettier for .js and .jsx
-  (add-hook 'js2-mode-hook 'prettier-js-mode)
-  (add-hook 'web-mode-hook 'prettier-js-mode)
-
-  (defun enable-minor-mode (my-pair)
-    "Enable minor mode if filename match the regexp.  MY-PAIR is a cons cell (regexp . minor-mode)."
-    (if (buffer-file-name)
-        (if (string-match (car my-pair) buffer-file-name)
-            (funcall (cdr my-pair)))))
-
-  (add-hook 'web-mode-hook #'(lambda ()
-                               (enable-minor-mode
-                                '("\\.jsx?\\'" . prettier-js-mode))))
-
   ;; Play routes
   (add-to-list 'auto-mode-alist '("\\.routes$" . play-routes-mode))
 
+  ;; Capitalize keywords in SQL mode
+  (add-hook 'sql-mode-hook 'sqlup-mode)
+  ;; Capitalize keywords in an interactive session (e.g. psql)
+  (add-hook 'sql-interactive-mode-hook 'sqlup-mode)
+
   (defun my/change-file-extension ()
-      (interactive)
-      (let* ((new-extension (read-from-minibuffer "Type the new extension including the dot (.): "))
-             (new-file-name (concat (file-name-sans-extension buffer-file-name) new-extension))
-             (filename (buffer-file-name)))
-        (rename-file filename new-file-name t)
-        (rename-buffer (concat (file-name-sans-extension (buffer-name)) new-extension))
-        (set-visited-file-name new-file-name)
-        (set-buffer-modified-p nil)
-        (message (concat "File renamed to " new-file-name))))
+    (interactive)
+    (let* ((new-extension (read-from-minibuffer "Type the new extension including the dot (.): "))
+           (new-file-name (concat (file-name-sans-extension buffer-file-name) new-extension))
+           (filename (buffer-file-name)))
+      (rename-file filename new-file-name t)
+      (rename-buffer (concat (file-name-sans-extension (buffer-name)) new-extension))
+      (set-visited-file-name new-file-name)
+      (set-buffer-modified-p nil)
+      (message (concat "File renamed to " new-file-name))))
 
   ;; hexo
   (defun my/hexo-blog ()
@@ -756,7 +746,10 @@ before packages are loaded."
   (setq auth-sources '("~/.authinfo.gpg" "~/.authinfo" "~/.netrc"))
 
   ;; display time mode
+  (setq display-time-24hr-format t
+        display-time-day-and-date t)
   (display-time-mode t)
+  (fancy-battery-mode t)
 
   ;; load local.el file
   (load "~/.spacemacs.d/local"))
