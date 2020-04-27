@@ -28,10 +28,9 @@ This function should only modify configuration layer settings."
    ;; a layer lazily. (default t)
    dotspacemacs-ask-for-lazy-installation t
 
-   ;; If non-nil layers with lazy install support are lazy installed.
    ;; List of additional paths where to look for configuration layers.
    ;; Paths must have a trailing slash (i.e. `~/.mycontribs/')
-   dotspacemacs-configuration-layer-path '()
+   dotspacemacs-configuration-layer-path '("~/.spacemacs.d/layers/")
 
    ;; List of configuration layers to load.
    dotspacemacs-configuration-layers
@@ -47,6 +46,7 @@ This function should only modify configuration layer settings."
                       auto-completion-enable-snippets-in-popup t
                       auto-completion-enable-help-tooltip t)
      better-defaults
+     c-c++
      (clojure :variables
               clojure-enable-fancify-symbols nil
               clojure-enable-sayid t
@@ -56,6 +56,7 @@ This function should only modify configuration layer settings."
      command-log
      common-lisp
      confluence
+     copy-as-format
      csv
      dap ; debug adapter protocol
      dash
@@ -67,7 +68,11 @@ This function should only modify configuration layer settings."
      emoji
      erlang
      games
-     git
+     (git :variables
+          ;; magit
+          magit-refresh-status-buffer nil
+          magit-repository-directories `(("~/Workspace/" . 3)
+                                         (,user-emacs-directory . 1)))
      github
      go
      haskell
@@ -84,15 +89,23 @@ This function should only modify configuration layer settings."
                markdown-live-preview-engine 'vmd)
      (multiple-cursors :variables
                        multiple-cursors-backend 'evil-mc)
-     neotree
      nginx
      (org :variables
           org-enable-github-support t
           org-enable-bootstrap-support t
           org-enable-reveal-js-support t
+          org-enable-org-journal-support t
           org-want-todo-bindings t
+          org-enable-jira-support t
           org-projectile-file "TODOs.org"
-          org-projectile-projects-file "~/Dropbox/org-mode/Projects.org")
+          org-projectile-projects-file "~/Dropbox/org-mode/Projects.org"
+          org-directory "~/Dropbox/org-mode"
+          org-journal-dir "~/Dropbox/org-mode/journals/" ;; this is overridden in local.el for worklaptop
+          org-display-custom-times t
+          ;; org-time-stamp-custom-formats '("<%d/%m/%Y %a>" . "<%d/%m/%Y %a %H:%M>")
+          ;; Override this on each org-file by adding
+          ;; #+REVEAL_ROOT: http://cdn.jsdelivr.net/reveal.js/3.1.0/
+          org-reveal-root "https://cdn.jsdelivr.net/npm/reveal.js/")
      osx
      prettier
      (python :variables
@@ -140,12 +153,14 @@ This function should only modify configuration layer settings."
      syntax-checking
      (terraform :variables
                 terraform-auto-format-on-save t)
+     (treemacs :variables
+               treemacs-use-filewatch-mode t
+               treemcas-use-git-mode 'deferred
+               treemacs-use-follow-mode nil)
      vagrant
      (version-control :variables
                       version-control-diff-tool 'diff-hl
                       version-control-diff-side 'left)
-     vimscript
-     vinegar
      xkcd
      yaml)
 
@@ -158,18 +173,19 @@ This function should only modify configuration layer settings."
    ;; Also include the dependencies as they will not be resolved automatically.
    dotspacemacs-additional-packages '(all-the-icons
                                       atomic-chrome
+                                      centaur-tabs
                                       doom-themes
+                                      easy-hugo
                                       ejc-sql
                                       eterm-256color
                                       exec-path-from-shell
                                       feature-mode
+                                      format-sql
                                       github-review
                                       gradle-mode
                                       groovy-mode
-                                      hexo
                                       langtool
-                                      sqlup-mode
-                                      format-sql)
+                                      sqlup-mode)
 
    ;; A list of packages that cannot be updated.
    dotspacemacs-frozen-packages '()
@@ -203,7 +219,7 @@ It should only modify the values of Spacemacs settings."
    ;; File path pointing to emacs 27.1 executable compiled with support
    ;; for the portable dumper (this is currently the branch pdumper).
    ;; (default "emacs-27.0.50")
-   dotspacemacs-emacs-pdumper-executable-file "emacs-27.0.50"
+   dotspacemacs-emacs-pdumper-executable-file "emacs-28.0.50"
 
    ;; Name of the Spacemacs dump file. This is the file will be created by the
    ;; portable dumper in the cache directory under dumps sub-directory.
@@ -262,6 +278,11 @@ It should only modify the values of Spacemacs settings."
    ;; If non-nil output loading progress in `*Messages*' buffer. (default nil)
    dotspacemacs-verbose-loading nil
 
+   ;; If non-nil show the version string in the Spacemacs buffer. It will
+   ;; appear as (spacemacs version)@(emacs version)
+   ;; (default t)
+   dotspacemacs-startup-buffer-show-version t
+
    ;; Specify the startup banner. Default value is `official', it displays
    ;; the official spacemacs logo. An integer value is the index of text
    ;; banner, `random' chooses a random text banner in `core/banners'
@@ -277,13 +298,19 @@ It should only modify the values of Spacemacs settings."
    ;; List sizes may be nil, in which case
    ;; `spacemacs-buffer-startup-lists-length' takes effect.
    dotspacemacs-startup-lists '((recents . 5)
+                                (bookmarks . 3)
                                 (projects . 7))
 
    ;; True if the home buffer should respond to resize events. (default t)
    dotspacemacs-startup-buffer-responsive t
 
+   ;; Default major mode for a new empty buffer. Possible values are mode
+   ;; names such as `text-mode'; and `nil' to use Fundamental mode.
+   ;; (default `text-mode')
+   dotspacemacs-new-empty-buffer-major-mode 'text-mode
+
    ;; Default major mode of the scratch buffer (default `text-mode')
-   dotspacemacs-scratch-mode 'text-mode
+   dotspacemacs-scratch-mode 'org-mode
 
    ;; Initial message in the scratch buffer, such as "Welcome to Spacemacs!"
    ;; (default nil)
@@ -292,7 +319,7 @@ It should only modify the values of Spacemacs settings."
    ;; List of themes, the first of the list is loaded when spacemacs starts.
    ;; Press `SPC T n' to cycle to the next theme in the list (works great
    ;; with 2 themes variants, one dark and one light)
-   dotspacemacs-themes '(doom-one
+   dotspacemacs-themes '(doom-dracula
                          spacemacs-dark
                          spacemacs-light)
 
@@ -335,8 +362,10 @@ It should only modify the values of Spacemacs settings."
    dotspacemacs-major-mode-leader-key ","
 
    ;; Major mode leader key accessible in `emacs state' and `insert state'.
-   ;; (default "C-M-m")
-   dotspacemacs-major-mode-emacs-leader-key "C-M-m"
+   ;; (default "C-M-m" for terminal mode, "<M-return>" for GUI mode).
+   ;; Thus M-RET should work as leader key in both GUI and terminal modes.
+   ;; C-M-m also should work in terminal mode, but not in GUI mode.
+   dotspacemacs-major-mode-emacs-leader-key (if window-system "<M-return>" "C-M-m")
 
    ;; These variables control whether separate commands are bound in the GUI to
    ;; the key pairs `C-i', `TAB' and `C-m', `RET'.
@@ -378,7 +407,7 @@ It should only modify the values of Spacemacs settings."
    ;; If non-nil, the paste transient-state is enabled. While enabled, after you
    ;; paste something, pressing `C-j' and `C-k' several times cycles through the
    ;; elements in the `kill-ring'. (default nil)
-   dotspacemacs-enable-paste-transient-state nil
+   dotspacemacs-enable-paste-transient-state t
 
    ;; Which-key delay in seconds. The which-key buffer is the popup listing
    ;; the commands bound to the current keystroke sequence. (default 0.4)
@@ -415,6 +444,11 @@ It should only modify the values of Spacemacs settings."
    ;; (default nil) (Emacs 24.4+ only)
    dotspacemacs-maximized-at-startup t
 
+   ;; If non-nil the frame is undecorated when Emacs starts up. Combine this
+   ;; variable with `dotspacemacs-maximized-at-startup' in OSX to obtain
+   ;; borderless fullscreen. (default nil)
+   dotspacemacs-undecorated-at-startup nil
+
    ;; A value from the range (0..100), in increasing opacity, which describes
    ;; the transparency level of a frame when it's active or selected.
    ;; Transparency can be toggled through `toggle-transparency'. (default 90)
@@ -434,7 +468,7 @@ It should only modify the values of Spacemacs settings."
    ;; If non-nil unicode symbols are displayed in the mode line.
    ;; If you use Emacs as a daemon and wants unicode characters only in GUI set
    ;; the value to quoted `display-graphic-p'. (default t)
-   dotspacemacs-mode-line-unicode-symbols t
+   dotspacemacs-mode-line-unicode-symbols nil
 
    ;; If non-nil smooth scrolling (native-scrolling) is enabled. Smooth
    ;; scrolling overrides the default behavior of Emacs which recenters point
@@ -442,10 +476,14 @@ It should only modify the values of Spacemacs settings."
    dotspacemacs-smooth-scrolling t
 
    ;; Control line numbers activation.
-   ;; If set to `t' or `relative' line numbers are turned on in all `prog-mode' and
-   ;; `text-mode' derivatives. If set to `relative', line numbers are relative.
+   ;; If set to `t', `relative' or `visual' then line numbers are enabled in all
+   ;; `prog-mode' and `text-mode' derivatives. If set to `relative', line
+   ;; numbers are relative. If set to `visual', line numbers are also relative,
+   ;; but lines are only visual lines are counted. For example, folded lines
+   ;; will not be counted and wrapped lines are counted as multiple lines.
    ;; This variable can also be set to a property list for finer control:
    ;; '(:relative nil
+   ;;   :visual nil
    ;;   :disabled-for-modes dired-mode
    ;;                       doc-view-mode
    ;;                       markdown-mode
@@ -453,6 +491,7 @@ It should only modify the values of Spacemacs settings."
    ;;                       pdf-view-mode
    ;;                       text-mode
    ;;   :size-limit-kb 1000)
+   ;; When used in a plist, `visual` takes precedence over `relative`.
    ;; (default nil)
    dotspacemacs-line-numbers
    '(:relative t
@@ -529,6 +568,13 @@ It should only modify the values of Spacemacs settings."
    ;; (default nil)
    dotspacemacs-whitespace-cleanup 'trailing
 
+   ;; If non nil activate `clean-aindent-mode' which tries to correct
+   ;; virtual indentation of simple modes. This can interfer with mode specific
+   ;; indent handling like has been reported for `go-mode'.
+   ;; If it does deactivate it here.
+   ;; (default t)
+   dotspacemacs-use-clean-aindent-mode t
+
    ;; Either nil or a number of seconds. If non-nil zone out after the specified
    ;; number of seconds. (default nil)
    dotspacemacs-zone-out-when-idle nil
@@ -553,17 +599,12 @@ configuration.
 It is mostly for variables that should be set before packages are loaded.
 If you are unsure, try setting them in `dotspacemacs/user-config' first."
 
-  ;; https://github.com/purcell/exec-path-from-shell
-  ;; (when (memq window-system '(mac ns x))
-  ;;   (exec-path-from-shell-initialize))
-  (add-to-list 'exec-path "/usr/local/bin")
-
   (add-hook 'term-mode-hook 'toggle-truncate-lines)
 
-  ;; add melpa-stable to archives
-  (push '("melpa-stable" . "stable.melpa.org/packages/") configuration-layer-elpa-archives)
-  (push '(ensime . "melpa-stable") package-pinned-packages)
-  (add-to-list 'package-archives '("melpa" . "http://melpa.milkbox.net/packages/") t)
+  (setq configuration-layer-elpa-archives '(("melpa-stable" . "stable.melpa.org/packages/")
+                                            ("melpa" . "melpa.org/packages/")
+                                            ("org" . "orgmode.org/elpa/")
+                                            ("gnu" . "elpa.gnu.org/packages/")))
 
   ;; spell-checking use aspell and default to british language
   (setq ispell-program-name "aspell"
@@ -582,15 +623,36 @@ configuration.
 Put your configuration code here, except for variables that should be set
 before packages are loaded."
 
+  ;; https://github.com/purcell/exec-path-from-shell
+  (exec-path-from-shell-initialize)
+  (add-to-list 'exec-path "/usr/local/bin")
+  (exec-path-from-shell-copy-env "PATH")
+
   ;; doom theme start
   (use-package doom-themes
     :config
+    ;; Global settings (defaults)
+    (setq doom-themes-enable-bold t    ; if nil, bold is universally disabled
+          doom-themes-enable-italic t) ; if nil, italics is universally disabled
+
     ;; Enable flashing mode-line on errors
     (doom-themes-visual-bell-config)
-    ;; Enable custom neotree theme (all-the-icons must be installed!)
-    (doom-themes-neotree-config))
+
+    (setq doom-themes-treemacs-theme "doom-colors") ; use the colorful treemacs theme
+    (doom-themes-treemacs-config)
+
     ;; Corrects (and improves) org-mode's native fontification.
-    ;; (doom-themes-org-config))
+    (doom-themes-org-config))
+
+  (use-package easy-hugo
+    :init
+    (setq easy-hugo-basedir "~/Workspace/Personal/tech/"
+          easy-hugo-url "https://deepumohan.com/"
+          easy-hugo-postdir "content/tech"
+          easy-hugo-amazon-s3-bucket-name "your-amazon-s3-bucket-name"
+          easy-hugo-default-ext ".org"
+          easy-hugo-previewtime "300")
+    :bind ("C-c C-e" . easy-hugo))
 
   ;; frame
   (add-to-list 'default-frame-alist
@@ -599,13 +661,33 @@ before packages are loaded."
   (add-to-list 'default-frame-alist
                '(ns-appearance . dark)) ;; or light - depending on your theme
 
-
   ;; Atomic chrome
   (use-package atomic-chrome
     :init
     ;; (setq atomic-chrome-ghost-text-port 4001)
     :config
     (atomic-chrome-start-server))
+
+  ;; Centaur Tabs
+  (use-package centaur-tabs
+    :demand
+    :config
+    (setq centaur-tabs-style "bar"
+          centaur-tabs-height 32
+          centaur-tabs-set-icons t
+          centaur-tabs-gray-out-icons 'buffer
+          centaur-tabs-set-bar 'left
+          centaur-tabs-set-modified-marker t
+          centaur-tabs-show-navigation-buttons t
+          centaur-tabs-modified-marker "M"
+          uniquify-separator "/"
+          uniquify-buffer-name-style 'forward)
+    (centaur-tabs-headline-match)
+    (centaur-tabs-group-by-projectile-project)
+    (centaur-tabs-mode t)
+    :bind (("C-<prior>" . centaur-tabs-backward)
+           ("C-<next>" . centaur-tabs-forward)
+           ("C-c t" . centaur-tabs-counsel-switch-group)))
 
   ;; M-3 is mapped to window 3, so map M-# to get £ sign GBP (pound sign)
   ;; (This is for Dvorak layout, UK layout may need to map # instead)
@@ -625,12 +707,9 @@ before packages are loaded."
   ;; Change evil-hybrid-state-cursor cursor to box
   (spacemacs/add-evil-cursor "hybrid" "SkyBlue2" 'box)
 
+  ;; bulk setq section
   (setq
    evil-escape-key-sequence "jk"
-   ;; magit
-   magit-repository-directories
-   `(("~/Workspace/" . 3)
-     (,user-emacs-directory . 1))
    ;; javascript
    js2-basic-offset 4
    js-indent-level 2
@@ -643,6 +722,9 @@ before packages are loaded."
    ;; Set deft-directory to Dropbox so it is in sync
    deft-directory "~/Dropbox/org-mode/deft"
 
+   ;; org-plantuml-jar-path "/usr/local/bin/plantuml"
+   org-plantuml-cmd-path "/usr/local/bin/plantuml"
+
    ;; Projectile disable caching
    projectile-enable-caching t
 
@@ -651,16 +733,15 @@ before packages are loaded."
    ;; sh configuration
    pytest-cmd-format-string "cd %s &  %s %s %s"
 
-   ;; Set shell
-   shell-file-name "/bin/sh"
+   python-shell-completion-native-enable nil
 
-   ;; org-mode
-   org-display-custom-times t
-   org-directory "~/Dropbox/org-mode"
-   org-time-stamp-custom-formats '("<%d/%m/%Y %a>" . "<%d/%m/%Y %a %H:%M>")
-   ;; Override this on each org-file by adding
-   ;; #+REVEAL_ROOT: http://cdn.jsdelivr.net/reveal.js/3.1.0/
-   org-reveal-root "https://cdn.jsdelivr.net/npm/reveal.js/")
+   blacken-line-length 100
+   blacken-skip-string-normalization t
+
+   ;; Set shell
+   shell-file-name "/bin/bash"
+   vterm-shell "/usr/local/bin/fish"
+   exec-path-from-shell-shell-name "/usr/local/bin/fish")
 
   (with-eval-after-load 'org
     ;; here goes your Org config :)
@@ -674,18 +755,23 @@ before packages are loaded."
        (emacs-lisp . t)
        (http . t)
        (lisp . t)
+       (plantuml . t)
        (python . t)
        (restclient . t)
-       (scala . t)
        (shell . t)
        (sql . t)
-       (sqlite . t))))
+       (sqlite . t)))
+
+    ;; load org-tempo
+    (use-package org-tempo))
     ;; with-eval-after-load 'org
 
   ;; Add projectile TODOs.org files to agenda
   (with-eval-after-load 'org-agenda
     (require 'org-projectile)
-    (setq org-agenda-files (append '("~/Dropbox/org-mode/deft" "~/Dropbox/org-mode/org-jira")
+    (setq org-agenda-files (append '("~/Dropbox/org-mode/deft"
+                                     "~/Dropbox/org-mode/org-jira"
+                                     "~/Dropbox/org-mode/journal")
                                    (org-projectile-todo-files)))
     (push (org-projectile-project-todo-entry) org-capture-templates))
 
@@ -745,11 +831,15 @@ before packages are loaded."
 
   (setq auth-sources '("~/.authinfo.gpg" "~/.authinfo" "~/.netrc"))
 
-  ;; display time mode
-  (setq display-time-24hr-format t
-        display-time-day-and-date t)
-  (display-time-mode t)
-  (fancy-battery-mode t)
+  ;; display time mode in graphics mode
+  (defun my/modeline-extras()
+    (setq display-time-24hr-format t
+          display-time-day-and-date t)
+    (display-time-mode t)
+    (fancy-battery-mode t))
+
+  (if (display-graphic-p)
+      (my/modeline-extras))
 
   ;; load local.el file
   (load "~/.spacemacs.d/local"))
