@@ -97,6 +97,8 @@ This function should only modify configuration layer settings."
           org-enable-org-journal-support t
           org-want-todo-bindings t
           org-enable-jira-support t
+          org-enable-sticky-header nil
+          org-jira-working-dir "~/Dropbox/org-mode/org-jira" ;; override in local.el for worklaptop
           org-projectile-file "TODOs.org"
           org-projectile-projects-file "~/Dropbox/org-mode/Projects.org"
           org-directory "~/Dropbox/org-mode"
@@ -155,8 +157,10 @@ This function should only modify configuration layer settings."
                 terraform-auto-format-on-save t)
      (treemacs :variables
                treemacs-use-filewatch-mode t
+               treemacs-use-follow-mode t
+               treemacs-use-icons-dired t
                treemcas-use-git-mode 'deferred
-               treemacs-use-follow-mode nil)
+               treemacs-use-scope-type 'Perspectives)
      vagrant
      (version-control :variables
                       version-control-diff-tool 'diff-hl
@@ -339,7 +343,7 @@ It should only modify the values of Spacemacs settings."
    ;; Default font, or prioritized list of fonts. `powerline-scale' allows to
    ;; quickly tweak the mode-line size to make separators look not too crappy.
    dotspacemacs-default-font '("SauceCodePro Nerd Font Mono"
-                               :size 16
+                               :size 14
                                :weight normal
                                :width normal)
 
@@ -743,6 +747,9 @@ before packages are loaded."
    vterm-shell "/usr/local/bin/fish"
    exec-path-from-shell-shell-name "/usr/local/bin/fish")
 
+  ;; syntax-highlighting for 'dash.el function
+  (eval-after-load 'dash '(dash-enable-font-lock))
+
   (with-eval-after-load 'org
     ;; here goes your Org config :)
     ;; to avoid conflicts with the org shipped with emacs
@@ -763,17 +770,24 @@ before packages are loaded."
        (sqlite . t)))
 
     ;; load org-tempo
-    (use-package org-tempo))
-    ;; with-eval-after-load 'org
+    (use-package org-tempo)
 
-  ;; Add projectile TODOs.org files to agenda
-  (with-eval-after-load 'org-agenda
-    (require 'org-projectile)
-    (setq org-agenda-files (append '("~/Dropbox/org-mode/deft"
-                                     "~/Dropbox/org-mode/org-jira"
-                                     "~/Dropbox/org-mode/journal")
-                                   (org-projectile-todo-files)))
-    (push (org-projectile-project-todo-entry) org-capture-templates))
+    (with-eval-after-load 'org-capture
+      (use-package org-projectile
+        :config
+        (push (org-projectile-project-todo-entry) org-capture-templates)))
+
+    (with-eval-after-load 'org-agenda
+      (setq org-agenda-files '("~/Dropbox/org-mode/deft"
+                               "~/Dropbox/org-mode/org-jira"
+                               "~/Dropbox/org-mode/journal"))
+      ;; Add projectile TODOs.org files to agenda
+      (use-package org-projectile
+        :config
+        (setq org-agenda-files
+              (--> (org-projectile-todo-files)
+                   (-filter #'file-exists-p it)
+                   (-concat it org-agenda-files))))))
 
   ;; web-mode
   (add-to-list 'auto-mode-alist '("\\.swig\\'" . web-mode))
