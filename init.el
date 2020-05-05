@@ -67,6 +67,7 @@ This function should only modify configuration layer settings."
      emacs-lisp
      emoji
      erlang
+     tabs ;; private layer in layers/
      games
      (git :variables
           ;; magit
@@ -177,7 +178,6 @@ This function should only modify configuration layer settings."
    ;; Also include the dependencies as they will not be resolved automatically.
    dotspacemacs-additional-packages '(all-the-icons
                                       atomic-chrome
-                                      centaur-tabs
                                       doom-themes
                                       easy-hugo
                                       ejc-sql
@@ -672,27 +672,6 @@ before packages are loaded."
     :config
     (atomic-chrome-start-server))
 
-  ;; Centaur Tabs
-  (use-package centaur-tabs
-    :demand
-    :config
-    (setq centaur-tabs-style "bar"
-          centaur-tabs-height 32
-          centaur-tabs-set-icons t
-          centaur-tabs-gray-out-icons 'buffer
-          centaur-tabs-set-bar 'left
-          centaur-tabs-set-modified-marker t
-          centaur-tabs-show-navigation-buttons t
-          centaur-tabs-modified-marker "M"
-          uniquify-separator "/"
-          uniquify-buffer-name-style 'forward)
-    (centaur-tabs-headline-match)
-    (centaur-tabs-group-by-projectile-project)
-    (centaur-tabs-mode t)
-    :bind (("C-<prior>" . centaur-tabs-backward)
-           ("C-<next>" . centaur-tabs-forward)
-           ("C-c t" . centaur-tabs-counsel-switch-group)))
-
   ;; M-3 is mapped to window 3, so map M-# to get £ sign GBP (pound sign)
   ;; (This is for Dvorak layout, UK layout may need to map # instead)
   ;; (global-set-key (kbd "M-#") '(lambda() (interactive) (insert "£")))
@@ -855,8 +834,10 @@ before packages are loaded."
   (if (display-graphic-p)
       (my/modeline-extras))
 
-  ;; load local.el file
-  (load "~/.spacemacs.d/local"))
+  ;; load local.el file it it exists
+  (when-let ((local-file "~/.spacemacs.d/local.el")
+             (file-exists-p local-file))
+    (load-file local-file)))
 
 ;; Do not write anything past this comment. This is where Emacs will
 ;; auto-generate custom variable definitions.
