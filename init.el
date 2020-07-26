@@ -82,7 +82,11 @@ This function should only modify configuration layer settings."
      ivy
      (java :variables
            java-backend 'lsp)
-     javascript
+     (javascript :variables
+                 javascript-import-tool 'import-js
+                 javascript-fmt-tool 'prettier
+                 javascript-fmt-on-save t
+                 javascript-repl `nodejs)
      latex
      lsp
      (markdown :variables
@@ -140,7 +144,7 @@ This function should only modify configuration layer settings."
      semantic
      (shell :variables
             shell-default-height 30
-            shell-default-shell 'multi-term
+            shell-default-shell 'vterm
             shell-default-term-shell "/usr/local/bin/fish"
             shell-default-position 'bottom)
      shell-scripts
@@ -166,6 +170,8 @@ This function should only modify configuration layer settings."
      (version-control :variables
                       version-control-diff-tool 'diff-hl
                       version-control-diff-side 'left)
+     (vue :variables
+          vue-backend 'dumb)
      xkcd
      yaml)
 
