@@ -16,14 +16,15 @@
   (use-package centaur-tabs
     :demand
     :config
-    (setq centaur-tabs-style "bar"
-          centaur-tabs-height 32
-          centaur-tabs-set-icons t
+    (setq centaur-tabs-cycle-scope 'tabs
           centaur-tabs-gray-out-icons 'buffer
+          centaur-tabs-height 32
+          centaur-tabs-modified-marker "⚠"
           centaur-tabs-set-bar 'left
+          centaur-tabs-set-icons t
           centaur-tabs-set-modified-marker t
           centaur-tabs-show-navigation-buttons t
-          centaur-tabs-modified-marker "M"
+          centaur-tabs-style "bar"
           uniquify-separator "/"
           uniquify-buffer-name-style 'forward)
     (centaur-tabs-headline-match)

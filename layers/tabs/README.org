@@ -1,4 +1,4 @@
-#+TITLE: tabs layer
+#+TITLE: Tabs layer
 #+TAGS: layer|spacemacs
 
 # TOC links should be GitHub style anchors.
