@@ -119,6 +119,10 @@ This function should only modify configuration layer settings."
           org-reveal-root "https://cdn.jsdelivr.net/npm/reveal.js/")
      org-roam ;; private layer
      osx
+     pdf
+     (plantuml :variables
+               plantuml-executable-path "/usr/local/bin/plantuml"
+               org-plantuml-jar-path "/usr/local/Cellar/plantuml/1.2020.15/libexec/plantuml.jar")
      prettier
      (python :variables
              python-backend 'lsp
