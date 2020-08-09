@@ -100,19 +100,24 @@ This function should only modify configuration layer settings."
           org-enable-bootstrap-support t
           org-enable-reveal-js-support t
           org-enable-org-journal-support t
+          org-journal-enable-agenda-integration t
           org-want-todo-bindings t
           org-enable-jira-support t
           org-enable-sticky-header nil
+          org-journal-date-prefix "#+title: "
+          org-journal-file-format "%Y-%m-%d.org"
+          org-journal-date-format "%A, %d %B %Y"
+          org-journal-dir "~/Dropbox/org-mode/journals/" ;; this is overridden in local.el for worklaptop
           org-jira-working-dir "~/Dropbox/org-mode/org-jira" ;; override in local.el for worklaptop
           org-projectile-file "TODOs.org"
           org-projectile-projects-file "~/Dropbox/org-mode/Projects.org"
           org-directory "~/Dropbox/org-mode"
-          org-journal-dir "~/Dropbox/org-mode/journals/" ;; this is overridden in local.el for worklaptop
           org-display-custom-times t
           ;; org-time-stamp-custom-formats '("<%d/%m/%Y %a>" . "<%d/%m/%Y %a %H:%M>")
           ;; Override this on each org-file by adding
           ;; #+REVEAL_ROOT: http://cdn.jsdelivr.net/reveal.js/3.1.0/
           org-reveal-root "https://cdn.jsdelivr.net/npm/reveal.js/")
+     org-roam ;; private layer
      osx
      prettier
      (python :variables
