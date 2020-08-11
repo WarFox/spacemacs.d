@@ -193,16 +193,19 @@ This function should only modify configuration layer settings."
    ;; Also include the dependencies as they will not be resolved automatically.
    dotspacemacs-additional-packages '(all-the-icons
                                       atomic-chrome
+                                      beacon
                                       doom-themes
                                       easy-hugo
                                       ejc-sql
                                       eterm-256color
                                       exec-path-from-shell
                                       feature-mode
+                                      fira-code-mode
                                       format-sql
                                       github-review
                                       gradle-mode
                                       groovy-mode
+                                      highlight-indent-guides
                                       langtool
                                       sqlup-mode)
 
@@ -359,6 +362,8 @@ It should only modify the values of Spacemacs settings."
    ;; quickly tweak the mode-line size to make separators look not too crappy.
    dotspacemacs-default-font '("SauceCodePro Nerd Font Mono"
                                :size 14
+   dotspacemacs-default-font '("Fira Code"
+                               :size 12
                                :weight normal
                                :width normal)
 
@@ -407,12 +412,12 @@ It should only modify the values of Spacemacs settings."
 
    ;; If non-nil, auto-generate layout name when creating new layouts. Only has
    ;; effect when using the "jump to layout by number" commands. (default nil)
-   dotspacemacs-auto-generate-layout-names nil
+   dotspacemacs-auto-generate-layout-names t
 
    ;; Size (in MB) above which spacemacs will prompt to open the large file
    ;; literally to avoid performance issues. Opening a file literally means that
    ;; no major mode or minor modes are active. (default is 1)
-   dotspacemacs-large-file-size 1
+   dotspacemacs-large-file-size 5
 
    ;; Location where to auto-save files. Possible values are `original' to
    ;; auto-save the file in-place, `cache' to auto-save the file to another
@@ -642,24 +647,39 @@ configuration.
 Put your configuration code here, except for variables that should be set
 before packages are loaded."
 
-  ;; https://github.com/purcell/exec-path-from-shell
-  (exec-path-from-shell-initialize)
-  (add-to-list 'exec-path "/usr/local/bin")
-  (exec-path-from-shell-copy-env "PATH")
+  (beacon-mode 1)
+
+  ;; Atomic chrome
+  (use-package atomic-chrome
+    :init
+    ;; (setq atomic-chrome-ghost-text-port 4001)
+    :config
+    (atomic-chrome-start-server))
+
+  (use-package fira-code-mode
+    :custom (fira-code-mode-disabled-ligatures '())  ; ligatures you don't want
+    :hook prog-mode)                                 ; mode to enable fira-code-mode in
+
+  (use-package window-purpose ; workaround until https://github.com/bmag/emacs-purpose/issues/158 is fixed
+    :if (= emacs-major-version 27))
+
+  ;; highlight indent
+  (use-package highlight-indent-guides-mode
+    :hook prog-mode
+    :init
+     (setq highlight-indent-guides-method 'character))
 
   ;; doom theme start
   (use-package doom-themes
     :config
     ;; Global settings (defaults)
     (setq doom-themes-enable-bold t    ; if nil, bold is universally disabled
-          doom-themes-enable-italic t) ; if nil, italics is universally disabled
+          doom-themes-enable-italic t  ; if nil, italics is universally disabled
+          doom-themes-treemacs-theme "doom-colors") ; use the colorful treemacs theme
 
     ;; Enable flashing mode-line on errors
     (doom-themes-visual-bell-config)
-
-    (setq doom-themes-treemacs-theme "doom-colors") ; use the colorful treemacs theme
     (doom-themes-treemacs-config)
-
     ;; Corrects (and improves) org-mode's native fontification.
     (doom-themes-org-config))
 
@@ -680,12 +700,11 @@ before packages are loaded."
   (add-to-list 'default-frame-alist
                '(ns-appearance . dark)) ;; or light - depending on your theme
 
-  ;; Atomic chrome
-  (use-package atomic-chrome
-    :init
-    ;; (setq atomic-chrome-ghost-text-port 4001)
-    :config
-    (atomic-chrome-start-server))
+
+  ;; https://github.com/purcell/exec-path-from-shell
+  (exec-path-from-shell-initialize)
+  (add-to-list 'exec-path "/usr/local/bin")
+  (exec-path-from-shell-copy-env "PATH")
 
   ;; M-3 is mapped to window 3, so map M-# to get £ sign GBP (pound sign)
   ;; (This is for Dvorak layout, UK layout may need to map # instead)
@@ -707,6 +726,7 @@ before packages are loaded."
 
   ;; bulk setq section
   (setq
+   auth-sources '("~/.authinfo.gpg" "~/.authinfo" "~/.netrc")
    evil-escape-key-sequence "jk"
    ;; javascript
    js2-basic-offset 4
@@ -739,7 +759,10 @@ before packages are loaded."
    ;; Set shell
    shell-file-name "/bin/bash"
    vterm-shell "/usr/local/bin/fish"
-   exec-path-from-shell-shell-name "/usr/local/bin/fish")
+   exec-path-from-shell-shell-name "/usr/local/bin/fish"
+
+   ;; use x-widget-webkit-browse-url as default browse-url
+   browse-url-browser-function 'xwidget-webkit-browse-url)
 
   ;; syntax-highlighting for 'dash.el function
   (eval-after-load 'dash '(dash-enable-font-lock))
