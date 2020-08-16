@@ -2,7 +2,7 @@
 ;; This file is loaded by Spacemacs at startup.
 ;; It must be stored in your home directory.
 
-;; Copyright (C) 2016, 2017, 2018 by Deepu Mohan Puthrote
+;; Copyright (C) 2016 - 2020 by Deepu Mohan Puthrote
 
 (defun dotspacemacs/layers ()
   "Layer configuration:
@@ -365,8 +365,7 @@ It should only modify the values of Spacemacs settings."
    ;; (default t)
    dotspacemacs-colorize-cursor-according-to-state t
 
-   ;; Default font, or prioritized list of fonts. `powerline-scale' allows to
-   ;; quickly tweak the mode-line size to make separators look not too crappy.
+   ;; Default font or prioritized list of fonts.
    dotspacemacs-default-font '("Fira Code"
                                :size 12
                                :weight normal
@@ -641,16 +640,10 @@ configuration.
 It is mostly for variables that should be set before packages are loaded.
 If you are unsure, try setting them in `dotspacemacs/user-config' first."
 
-  (add-hook 'term-mode-hook 'toggle-truncate-lines)
-
   (setq configuration-layer-elpa-archives '(("melpa-stable" . "stable.melpa.org/packages/")
                                             ("melpa" . "melpa.org/packages/")
                                             ("org" . "orgmode.org/elpa/")
-                                            ("gnu" . "elpa.gnu.org/packages/")))
-
-  ;; spell-checking use aspell and default to british language
-  (setq ispell-program-name "aspell"
-        ispell-dictionary "british"))
+                                            ("gnu" . "elpa.gnu.org/packages/"))))
 
 (defun dotspacemacs/user-load ()
   "Library to load while dumping.
@@ -665,51 +658,51 @@ configuration.
 Put your configuration code here, except for variables that should be set
 before packages are loaded."
 
-  (beacon-mode 1)
-
-  ;; Atomic chrome
-  (use-package atomic-chrome
-    :init
-    ;; (setq atomic-chrome-ghost-text-port 4001)
+  ;; ui
+  (use-package beacon
     :config
-    (atomic-chrome-start-server))
+    (beacon-mode 1))
+
+  ;; Change evil-hybrid-state-cursor cursor to box
+  (spacemacs/add-evil-cursor "hybrid" "SkyBlue2" 'box)
 
   (use-package fira-code-mode
-    :custom (fira-code-mode-disabled-ligatures '())  ; ligatures you don't want
-    :hook prog-mode)                                 ; mode to enable fira-code-mode in
-
-  (use-package window-purpose ; workaround until https://github.com/bmag/emacs-purpose/issues/158 is fixed
-    :if (= emacs-major-version 27))
+    :custom
+    (fira-code-mode-disabled-ligatures '())  ; ligatures you don't want
+    :hook prog-mode)                         ; mode to enable fira-code-mode in
 
   ;; highlight indent
   (use-package highlight-indent-guides-mode
-    :hook prog-mode
-    :init
-     (setq highlight-indent-guides-method 'character))
+    :custom
+    (highlight-indent-guides-method 'character)
+    :hook prog-mode)
 
   ;; doom theme start
   (use-package doom-themes
-    :config
-    ;; Global settings (defaults)
+    :init
     (setq doom-themes-enable-bold t    ; if nil, bold is universally disabled
           doom-themes-enable-italic t  ; if nil, italics is universally disabled
           doom-themes-treemacs-theme "doom-colors") ; use the colorful treemacs theme
-
-    ;; Enable flashing mode-line on errors
-    (doom-themes-visual-bell-config)
+    :config
+    (doom-themes-visual-bell-config) ;; Enable flashing mode-line on errors
     (doom-themes-treemacs-config)
-    ;; Corrects (and improves) org-mode's native fontification.
-    (doom-themes-org-config))
+    (doom-themes-org-config)) ;; Corrects (and improves) org-mode's native fontification.
+
+  (use-package window-purpose ; workaround until https://github.com/bmag/emacs-purpose/issues/158 is fixed
+    :if (= emacs-major-version 27))
 
   (use-package easy-hugo
     :init
     (setq easy-hugo-basedir "~/Workspace/Personal/tech/"
           easy-hugo-url "https://deepumohan.com/"
-          easy-hugo-postdir "content/tech"
+          easy-hugo-postdir "content"
           easy-hugo-amazon-s3-bucket-name "your-amazon-s3-bucket-name"
           easy-hugo-default-ext ".org"
           easy-hugo-previewtime "300")
     :bind ("C-c C-e" . easy-hugo))
+
+  (use-package term-mode
+    :hook toggle-truncate-lines)
 
   ;; frame
   (add-to-list 'default-frame-alist
@@ -739,13 +732,17 @@ before packages are loaded."
   (defun my/langtool--version ()
     (nth 2 (split-string (shell-command-to-string "languagetool --version"))))
 
-  ;; Change evil-hybrid-state-cursor cursor to box
-  (spacemacs/add-evil-cursor "hybrid" "SkyBlue2" 'box)
+
+  ;; syntax-highlighting for 'dash.el function
+  (eval-after-load 'dash '(dash-enable-font-lock))
 
   ;; bulk setq section
   (setq
    auth-sources '("~/.authinfo.gpg" "~/.authinfo" "~/.netrc")
    evil-escape-key-sequence "jk"
+   ;; spell-checking use aspell and default to british language
+   ispell-program-name "aspell"
+   ispell-dictionary "british"
    ;; javascript
    js2-basic-offset 4
    js-indent-level 2
@@ -761,7 +758,7 @@ before packages are loaded."
    ;; org-plantuml-jar-path "/usr/local/bin/plantuml"
    org-plantuml-cmd-path "/usr/local/bin/plantuml"
 
-   ;; Projectile disable caching
+   ;; Projectile enable/disable caching
    projectile-enable-caching t
 
    ;; pytest fish configuration
@@ -781,9 +778,6 @@ before packages are loaded."
 
    ;; use x-widget-webkit-browse-url as default browse-url
    browse-url-browser-function 'xwidget-webkit-browse-url)
-
-  ;; syntax-highlighting for 'dash.el function
-  (eval-after-load 'dash '(dash-enable-font-lock))
 
   (with-eval-after-load 'org
     ;; here goes your Org config :)
@@ -824,18 +818,9 @@ before packages are loaded."
                    (-filter #'file-exists-p it)
                    (-concat it org-agenda-files))))))
 
-  ;; web-mode
-  (add-to-list 'auto-mode-alist '("\\.swig\\'" . web-mode))
-  (setq web-mode-content-types-alist
-        '(("jsx" . "\\.js[x]?\\'")))
-
-  ;; Play routes
-  (add-to-list 'auto-mode-alist '("\\.routes$" . play-routes-mode))
-
-  ;; Capitalize keywords in SQL mode
-  (add-hook 'sql-mode-hook 'sqlup-mode)
-  ;; Capitalize keywords in an interactive session (e.g. psql)
-  (add-hook 'sql-interactive-mode-hook 'sqlup-mode)
+  ;; Capitalize keywords in SQL mode and an interactive session (e.g. psql)
+  (use-package sqlup-mode
+    :hook '(sql-mode sql-interative-mode))
 
   (defun my/change-file-extension ()
     (interactive)
@@ -847,14 +832,6 @@ before packages are loaded."
       (set-visited-file-name new-file-name)
       (set-buffer-modified-p nil)
       (message (concat "File renamed to " new-file-name))))
-
-  ;; hexo
-  (defun my/hexo-blog ()
-    "open my hexo blog"
-    (interactive)
-    (hexo "~/Workspace/Personal/tech"))
-
-  (setq hexo-posix-compatible-shell-file-path "/bin/bash")
 
   ;; projectile open README file
   (defun my/projectile-open-readme ()
@@ -893,7 +870,12 @@ before packages are loaded."
   ;; load local.el file it it exists
   (when-let ((local-file "~/.spacemacs.d/local.el")
              (file-exists-p local-file))
-    (load-file local-file)))
+    (load-file local-file))
+
+  ;; finally start atomic chrome server
+  (use-package atomic-chrome
+    :config
+    (atomic-chrome-start-server)))
 
 ;; Do not write anything past this comment. This is where Emacs will
 ;; auto-generate custom variable definitions.
