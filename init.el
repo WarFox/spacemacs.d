@@ -869,8 +869,8 @@ before packages are loaded."
 
   ;; load local.el file it it exists
   (when-let ((local-file "~/.spacemacs.d/local.el")
-             (file-exists-p local-file))
-    (load-file local-file))
+             (file-exists? (file-exists-p local-file)))
+    (load (file-name-sans-extension local-file)))
 
   ;; finally start atomic chrome server
   (use-package atomic-chrome
