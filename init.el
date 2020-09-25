@@ -67,7 +67,14 @@ This function should only modify configuration layer settings."
      emacs-lisp
      emoji
      erlang
-     tabs ;; private layer in layers/
+     (tabs :variables
+           tabs-navigation 'tabs
+           tabs-gray-out-unselected 't
+           tabs-height 32
+           tabs-show-icons t
+           tabs-set-modified-marker t
+           tabs-show-navigation-buttons t
+           tabs-style "bar")
      games
      (git :variables
           ;; magit
@@ -703,6 +710,9 @@ before packages are loaded."
 
   (use-package term-mode
     :hook toggle-truncate-lines)
+
+  ;; use spacemacs as $EDITOR or $GIT_EDITOR for editing git commit messages
+  (global-git-commit-mode t)
 
   ;; frame
   (add-to-list 'default-frame-alist
