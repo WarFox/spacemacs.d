@@ -157,6 +157,8 @@ This function should only modify configuration layer settings."
              python-auto-set-local-pyenv-version 'on-visit)
      racket
      (ranger :variables
+             ranger-override-dired 'deer
+             ranger-max-preview-size 2 ; in MB
              ranger-show-literal nil)
      react
      restclient
@@ -256,7 +258,7 @@ It should only modify the values of Spacemacs settings."
    ;; to compile Emacs 27 from source following the instructions in file
    ;; EXPERIMENTAL.org at to root of the git repository.
    ;; (default nil)
-   dotspacemacs-enable-emacs-pdumper nil
+   dotspacemacs-enable-emacs-pdumper t
 
    ;; Name of executable file pointing to emacs 27+. This executable must be
    ;; in your PATH.
@@ -379,7 +381,7 @@ It should only modify the values of Spacemacs settings."
    ;; refer to the DOCUMENTATION.org for more info on how to create your own
    ;; spaceline theme. Value can be a symbol or list with additional properties.
    ;; (default '(spacemacs :separator wave :separator-scale 1.5))
-   dotspacemacs-mode-line-theme '(doom :separator arrow ) ; :seperator-scale 1.5)
+   dotspacemacs-mode-line-theme '(doom)
 
    ;; If non-nil the cursor color matches the state color in GUI Emacs.
    ;; (default t)
@@ -694,7 +696,7 @@ before packages are loaded."
   ;; highlight indent
   (use-package highlight-indent-guides-mode
     :custom
-    (highlight-indent-guides-method 'character)
+    (highlight-indent-guides-method 'bitmap)
     :hook prog-mode)
 
   ;; doom theme start
