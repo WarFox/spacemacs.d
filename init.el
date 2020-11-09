@@ -148,7 +148,7 @@ This function should only modify configuration layer settings."
      prettier
      (python :variables
              python-backend 'lsp
-             python-lsp-server 'pyls
+             python-lsp-server 'pyright
              python-formatter 'black
              python-format-on-save t
              python-pipenv-activate t
