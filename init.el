@@ -105,26 +105,40 @@ This function should only modify configuration layer settings."
      (org :variables
           org-enable-github-support t
           org-enable-bootstrap-support t
-          org-enable-reveal-js-support t
+          org-want-todo-bindings t
+          org-enable-sticky-header nil ;; don't enable sticky header
+          org-enable-verb-support t
+          ;; org-jira
+          org-enable-jira-support t
+          org-jira-working-dir "~/Dropbox/org-mode/org-jira" ;; override in local.el for worklaptop
+          ;; org-journal
           org-enable-org-journal-support t
           org-journal-enable-agenda-integration t
-          org-want-todo-bindings t
-          org-enable-jira-support t
-          org-enable-sticky-header nil
           org-journal-date-prefix "#+title: "
           org-journal-file-format "%Y-%m-%d.org"
           org-journal-date-format "%A, %d %B %Y"
           org-journal-dir "~/Dropbox/org-mode/journals/" ;; this is overridden in local.el for worklaptop
-          org-jira-working-dir "~/Dropbox/org-mode/org-jira" ;; override in local.el for worklaptop
+          ;; org-roam
+          org-enable-roam-support t
+          org-roam-directory "~/Dropbox/gyan/" ;; this is overridden in local.el for work laptop
+          org-roam-dailies-capture-templates
+                '(("d" "daily" plain (function org-roam-capture--get-point) ""
+                   :immediate-finish t
+                   :file-name "journals/%<%Y-%m-%d>"
+                   :head "#+title: %<<%Y-%m-%d>>")) ;; same as org-journal-date-format
+          ;; projectile
           org-projectile-file "TODOs.org"
           org-projectile-projects-file "~/Dropbox/org-mode/Projects.org"
           org-directory "~/Dropbox/org-mode"
+          ;; display-time
           org-display-custom-times t
           ;; org-time-stamp-custom-formats '("<%d/%m/%Y %a>" . "<%d/%m/%Y %a %H:%M>")
+          ;; reveal-js
+          org-enable-reveal-js-support t
           ;; Override this on each org-file by adding
           ;; #+REVEAL_ROOT: http://cdn.jsdelivr.net/reveal.js/3.1.0/
           org-reveal-root "https://cdn.jsdelivr.net/npm/reveal.js/")
-     org-roam ;; private layer
+     org-roam-server ;; private layer
      osx
      pdf
      (plantuml :variables
@@ -172,7 +186,6 @@ This function should only modify configuration layer settings."
      (sql :variables
           sql-capitalize-keywords t
           sql-auto-indent t)
-     swift
      syntax-checking
      (terraform :variables
                 terraform-auto-format-on-save t)
@@ -350,7 +363,7 @@ It should only modify the values of Spacemacs settings."
 
    ;; Initial message in the scratch buffer, such as "Welcome to Spacemacs!"
    ;; (default nil)
-   dotspacemacs-initial-scratch-message nil
+   dotspacemacs-initial-scratch-message "#+title: scratch"
 
    ;; List of themes, the first of the list is loaded when spacemacs starts.
    ;; Press `SPC T n' to cycle to the next theme in the list (works great
