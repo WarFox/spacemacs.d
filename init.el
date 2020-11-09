@@ -170,6 +170,7 @@ This function should only modify configuration layer settings."
      ruby-on-rails
      rust
      (scala :variables
+            scala-backend 'scala-metals
             scala-auto-insert-asterisk-in-comments t
             scala-indent:use-javadoc-style t)
      scheme
@@ -199,8 +200,9 @@ This function should only modify configuration layer settings."
                treemcas-use-git-mode 'deferred
                treemacs-use-scope-type 'Perspectives)
      (typescript :variables
-                typescript-fmt-on-save t
-                typescript-fmt-tool 'prettier)
+                 typescript-fmt-on-save t
+                 typescript-fmt-tool 'prettier)
+     unicode-fonts
      vagrant
      (version-control :variables
                       version-control-diff-tool 'diff-hl
@@ -522,7 +524,7 @@ It should only modify the values of Spacemacs settings."
    ;; If non-nil unicode symbols are displayed in the mode line.
    ;; If you use Emacs as a daemon and wants unicode characters only in GUI set
    ;; the value to quoted `display-graphic-p'. (default t)
-   dotspacemacs-mode-line-unicode-symbols nil
+   dotspacemacs-mode-line-unicode-symbols t
 
    ;; If non-nil smooth scrolling (native-scrolling) is enabled. Smooth
    ;; scrolling overrides the default behavior of Emacs which recenters point
