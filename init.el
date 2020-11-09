@@ -143,7 +143,8 @@ This function should only modify configuration layer settings."
      pdf
      (plantuml :variables
                plantuml-executable-path "/usr/local/bin/plantuml"
-               org-plantuml-jar-path "/usr/local/Cellar/plantuml/1.2020.15/libexec/plantuml.jar")
+               plantuml-server-url "http://localhost:8080"
+               plantuml-default-exec-mode 'server)
      prettier
      (python :variables
              python-backend 'lsp
@@ -726,6 +727,13 @@ before packages are loaded."
   (use-package term-mode
     :hook toggle-truncate-lines)
 
+  (use-package plantuml-mode
+    :defer t
+    :config
+    (setq
+     plantuml-jar-path (format "/usr/local/Cellar/plantuml/%s/libexec/plantuml.jar" (my/plantuml--version))
+     org-plantuml-jar-path plantuml-jar-path))
+
   ;; use spacemacs as $EDITOR or $GIT_EDITOR for editing git commit messages
   (global-git-commit-mode t)
 
@@ -754,9 +762,15 @@ before packages are loaded."
   (setq ns-alternate-modifier 'meta
         ns-right-alternate-modifier 'none)
 
+  ;; utility functions
   (defun my/langtool--version ()
     (nth 2 (split-string (shell-command-to-string "languagetool --version"))))
 
+  (defun my/plantuml--version ()
+    (thread-last
+        (shell-command-to-string "plantuml -version")
+        (split-string)
+        (nth 2)))
 
   ;; syntax-highlighting for 'dash.el function
   (eval-after-load 'dash '(dash-enable-font-lock))
@@ -779,9 +793,6 @@ before packages are loaded."
    multi-term-scroll-to-bottom-on-output 'this
    ;; Set deft-directory to Dropbox so it is in sync
    deft-directory "~/Dropbox/org-mode/deft"
-
-   ;; org-plantuml-jar-path "/usr/local/bin/plantuml"
-   org-plantuml-cmd-path "/usr/local/bin/plantuml"
 
    ;; Projectile enable/disable caching
    projectile-enable-caching t
