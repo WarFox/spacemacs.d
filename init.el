@@ -198,6 +198,9 @@ This function should only modify configuration layer settings."
                treemacs-use-icons-dired t
                treemcas-use-git-mode 'deferred
                treemacs-use-scope-type 'Perspectives)
+     (typescript :variables
+                typescript-fmt-on-save t
+                typescript-fmt-tool 'prettier)
      vagrant
      (version-control :variables
                       version-control-diff-tool 'diff-hl
