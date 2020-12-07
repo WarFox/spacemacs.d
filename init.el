@@ -108,6 +108,9 @@ This function should only modify configuration layer settings."
           org-want-todo-bindings t
           org-enable-sticky-header nil ;; don't enable sticky header
           org-enable-verb-support t
+          ;; display custom times
+          org-display-custom-times t
+          org-time-stamp-custom-formats '("</%d/%m/%y %a>" . "</%d/%m/%y %a %H:%M>")
           ;; org-jira
           org-enable-jira-support t
           org-jira-working-dir "~/Dropbox/org-mode/org-jira" ;; override in local.el for worklaptop
@@ -524,7 +527,7 @@ It should only modify the values of Spacemacs settings."
    ;; If non-nil unicode symbols are displayed in the mode line.
    ;; If you use Emacs as a daemon and wants unicode characters only in GUI set
    ;; the value to quoted `display-graphic-p'. (default t)
-   dotspacemacs-mode-line-unicode-symbols t
+   dotspacemacs-mode-line-unicode-symbols `display-graphic-p
 
    ;; If non-nil smooth scrolling (native-scrolling) is enabled. Smooth
    ;; scrolling overrides the default behavior of Emacs which recenters point
@@ -688,6 +691,7 @@ before packages are loaded."
 
   ;; ui
   (use-package beacon
+    :if (display-graphic-p)
     :config
     (beacon-mode 1))
 
@@ -695,6 +699,7 @@ before packages are loaded."
   (spacemacs/add-evil-cursor "hybrid" "SkyBlue2" 'box)
 
   (use-package fira-code-mode
+    :if (display-graphic-p)
     :custom
     (fira-code-mode-disabled-ligatures '())  ; ligatures you don't want
     :hook prog-mode)                         ; mode to enable fira-code-mode in
@@ -736,7 +741,9 @@ before packages are loaded."
     :defer t
     :config
     (setq
-     plantuml-jar-path (format "/usr/local/Cellar/plantuml/%s/libexec/plantuml.jar" (my/plantuml--version))
+     plantuml-jar-path (format
+                        "/usr/local/Cellar/plantuml/%s/libexec/plantuml.jar"
+                        (my/plantuml--version))
      org-plantuml-jar-path plantuml-jar-path))
 
   ;; use spacemacs as $EDITOR or $GIT_EDITOR for editing git commit messages
@@ -769,13 +776,16 @@ before packages are loaded."
 
   ;; utility functions
   (defun my/langtool--version ()
-    (nth 2 (split-string (shell-command-to-string "languagetool --version"))))
+    (->> "languagetool --version"
+         shell-command-to-string
+         split-string
+         (nth 2)))
 
   (defun my/plantuml--version ()
-    (thread-last
-        (shell-command-to-string "plantuml -version")
-        (split-string)
-        (nth 2)))
+    (->> "plantuml -version"
+         shell-command-to-string
+         split-string
+         (nth 2)))
 
   ;; syntax-highlighting for 'dash.el function
   (eval-after-load 'dash '(dash-enable-font-lock))
@@ -784,19 +794,24 @@ before packages are loaded."
   (setq
    auth-sources '("~/.authinfo.gpg" "~/.authinfo" "~/.netrc")
    evil-escape-key-sequence "jk"
+
    ;; spell-checking use aspell and default to british language
    ispell-program-name "aspell"
    ispell-dictionary "british"
+
    ;; javascript
    js2-basic-offset 4
    js-indent-level 2
+
    ;; langtool settings
    langtool-language-tool-jar (format "/usr/local/Cellar/languagetool/%s/libexec/languagetool-commandline.jar" (my/langtool--version))
    langtool-default-language "en-GB"
+
    ;; multi-term
    multi-term-scroll-show-maximum-output 't
    multi-term-scroll-to-bottom-on-output 'this
-   ;; Set deft-directory to Dropbox so it is in sync
+
+   ;; deft
    deft-directory "~/Dropbox/org-mode/deft"
 
    ;; Projectile enable/disable caching
@@ -820,7 +835,9 @@ before packages are loaded."
    ;; use x-widget-webkit-browse-url as default browse-url
    browse-url-browser-function 'xwidget-webkit-browse-url)
 
-  (with-eval-after-load 'org
+  (use-package org
+    :defer t
+    :config
     ;; here goes your Org config :)
     ;; to avoid conflicts with the org shipped with emacs
 
@@ -842,22 +859,25 @@ before packages are loaded."
     ;; load org-tempo
     (use-package org-tempo)
 
-    (with-eval-after-load 'org-capture
-      (use-package org-projectile
-        :config
-        (push (org-projectile-project-todo-entry) org-capture-templates)))
+    (use-package org-projectile
+      :defer t
+      ;; :after org-capture
+      :config
+      (push (org-projectile-project-todo-entry) org-capture-templates))
 
-    (with-eval-after-load 'org-agenda
-      (setq org-agenda-files '("~/Dropbox/org-mode/deft"
-                               "~/Dropbox/org-mode/org-jira"
-                               "~/Dropbox/org-mode/journal"))
+    (use-package org-agenda
+      :defer t
+      :init
       ;; Add projectile TODOs.org files to agenda
-      (use-package org-projectile
-        :config
-        (setq org-agenda-files
-              (--> (org-projectile-todo-files)
-                   (-filter #'file-exists-p it)
-                   (-concat it org-agenda-files))))))
+      (->> (org-projectile-todo-files)
+           (-filter #'file-exists-p)
+           (-concat '(org-journal-dir
+                      org-roam-directory
+                      org-jira-working-dir
+                      deft-directory))
+           (-keep 'identity)
+           (-distinct)
+           (setq org-agenda-files))))
 
   ;; Capitalize keywords in SQL mode and an interactive session (e.g. psql)
   (use-package sqlup-mode
