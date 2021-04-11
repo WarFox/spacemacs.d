@@ -34,8 +34,7 @@ This function should only modify configuration layer settings."
 
    ;; List of configuration layers to load.
    dotspacemacs-configuration-layers
-   '(
-     ;; ----------------------------------------------------------------
+   '(;; ----------------------------------------------------------------
      ;; Example of useful layers you may want to use right away.
      ;; Uncomment some layer names and press `SPC f e R' (Vim style) or
      ;; `M-m f e R' (Emacs style) to install them.
@@ -123,6 +122,7 @@ This function should only modify configuration layer settings."
           org-journal-dir "~/Dropbox/org-mode/journals/" ;; this is overridden in local.el for worklaptop
           ;; org-roam
           org-enable-roam-support t
+          org-enable-roam-server t
           org-roam-directory "~/Dropbox/gyan/" ;; this is overridden in local.el for work laptop
           org-roam-dailies-capture-templates
                 '(("d" "daily" plain (function org-roam-capture--get-point) ""
@@ -141,7 +141,6 @@ This function should only modify configuration layer settings."
           ;; Override this on each org-file by adding
           ;; #+REVEAL_ROOT: http://cdn.jsdelivr.net/reveal.js/3.1.0/
           org-reveal-root "https://cdn.jsdelivr.net/npm/reveal.js/")
-     org-roam-server ;; private layer
      osx
      pdf
      (plantuml :variables
