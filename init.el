@@ -42,8 +42,17 @@ This function should only modify configuration layer settings."
      (ansible :variables
               ansible-auto-encrypt-decrypt t)
      (auto-completion :variables
+                      auto-completion-complete-with-key-sequence nil
+                      auto-completion-complete-with-key-sequence-delay 0.1
+                      auto-completion-enable-help-tooltip t
                       auto-completion-enable-snippets-in-popup t
-                      auto-completion-enable-help-tooltip t)
+                      auto-completion-enable-sort-by-usage nil
+                      auto-completion-idle-delay 0.2
+                      auto-completion-minimum-prefix-length 2
+                      auto-completion-private-snippets-directory nil
+                      auto-completion-return-key-behavior 'complete
+                      auto-completion-tab-key-behavior 'cycle
+                      auto-completion-use-company-box nil)
      better-defaults
      c-c++
      (clojure :variables
