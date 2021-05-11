@@ -59,8 +59,9 @@ This function should only modify configuration layer settings."
               clojure-enable-fancify-symbols nil
               clojure-enable-sayid t
               clojure-enable-linters t
-              clojure-enable-clj-refactor t)
-     colors
+              clojure-enable-clj-refactor t
+              clojure-indent-style 'align-arguments
+              clojure-align-forms-automatically t)
      command-log
      common-lisp
      confluence
