@@ -115,8 +115,12 @@ This function should only modify configuration layer settings."
           org-enable-github-support t
           org-enable-bootstrap-support t
           org-want-todo-bindings t
-          org-enable-sticky-header nil ;; don't enable sticky header
-          org-enable-verb-support t
+          org-enable-sticky-header t
+          org-todo-keywords '((sequence "TODO" "DOING" "BLOCKED" "|" "DONE"))
+          org-todo-keyword-faces '(("todo" . "SlateGray")
+                                   ("doing" . "DarkOrchid")
+                                   ("blocked" . "Firebrick")
+                                   ("done" . "ForestGreen"))
           ;; display custom times
           org-display-custom-times t
           org-time-stamp-custom-formats '("</%d/%m/%y %a>" . "</%d/%m/%y %a %H:%M>")
@@ -128,7 +132,7 @@ This function should only modify configuration layer settings."
           org-journal-enable-agenda-integration t
           org-journal-date-prefix "#+title: "
           org-journal-file-format "%Y-%m-%d.org"
-          org-journal-date-format "%A, %d %B %Y"
+          org-journal-date-format "%d/%m/%y %a"
           org-journal-dir "~/Dropbox/org-mode/journals/" ;; this is overridden in local.el for worklaptop
           ;; org-roam
           org-enable-roam-support t
