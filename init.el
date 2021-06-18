@@ -68,7 +68,6 @@ This function should only modify configuration layer settings."
      copy-as-format
      csv
      dap ; debug adapter protocol
-     dash
      deft
      docker
      elixir
@@ -103,6 +102,7 @@ This function should only modify configuration layer settings."
                  javascript-fmt-tool 'prettier
                  javascript-fmt-on-save t
                  javascript-repl `nodejs)
+     jsonnet
      latex
      lsp
      (markdown :variables
@@ -243,7 +243,6 @@ This function should only modify configuration layer settings."
    ;; Also include the dependencies as they will not be resolved automatically.
    dotspacemacs-additional-packages '(all-the-icons
                                       atomic-chrome
-                                      beacon
                                       doom-themes
                                       easy-hugo
                                       ejc-sql
@@ -257,7 +256,10 @@ This function should only modify configuration layer settings."
                                       groovy-mode
                                       highlight-indent-guides
                                       langtool
-                                      sqlup-mode)
+                                      org-tree-slide
+                                      so-long
+                                      sqlup-mode
+                                      xwwp)
 
    ;; A list of packages that cannot be updated.
    dotspacemacs-frozen-packages '()
@@ -724,11 +726,6 @@ Put your configuration code here, except for variables that should be set
 before packages are loaded."
 
   ;; ui
-  (use-package beacon
-    :if (display-graphic-p)
-    :config
-    (beacon-mode 1))
-
   ;; Change evil-hybrid-state-cursor cursor to box
   (spacemacs/add-evil-cursor "hybrid" "SkyBlue2" 'box)
 
@@ -783,6 +780,10 @@ before packages are loaded."
   ;; use spacemacs as $EDITOR or $GIT_EDITOR for editing git commit messages
   (global-git-commit-mode t)
 
+  ;; handle long lines
+  (use-package so-long
+    :config (global-so-long-mode 1))
+
   ;; frame
   (add-to-list 'default-frame-alist
                '(ns-transparent-titlebar . t))
@@ -821,15 +822,10 @@ before packages are loaded."
          split-string
          (nth 2)))
 
-
   (defun my/open-org-roam-server-ui ()
     (interactive )
     (xwidget-webkit-browse-url
      (format "http://localhost:%n" org-roam-server-port)))
-
-
-  ;; syntax-highlighting for 'dash.el function
-  (eval-after-load 'dash '(dash-enable-font-lock))
 
   ;; bulk setq section
   (setq
