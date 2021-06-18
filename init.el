@@ -199,6 +199,9 @@ This function should only modify configuration layer settings."
             shell-default-height 30
             shell-default-shell 'vterm
             shell-default-term-shell "/usr/local/bin/fish"
+            shell-file-name "/usr/local/bin/fish" ;; for async shell commands
+            vterm-shell "/usr/local/bin/fish"
+            exec-path-from-shell-shell-name "/usr/local/bin/fish"
             shell-default-position 'bottom)
      shell-scripts
      slack
@@ -849,11 +852,6 @@ before packages are loaded."
 
    blacken-line-length 100
    blacken-skip-string-normalization t
-
-   ;; Set shell
-   shell-file-name "/bin/bash"
-   vterm-shell "/usr/local/bin/fish"
-   exec-path-from-shell-shell-name "/usr/local/bin/fish"
 
    ;; use x-widget-webkit-browse-url as default browse-url
    browse-url-browser-function 'xwidget-webkit-browse-url)
