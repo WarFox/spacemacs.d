@@ -110,16 +110,18 @@ This function should only modify configuration layer settings."
                markdown-live-preview-engine 'vmd)
      (multiple-cursors :variables
                        multiple-cursors-backend 'evil-mc)
+     nav-flash
      nginx
      (org :variables
           org-enable-github-support t
           org-enable-bootstrap-support t
           org-want-todo-bindings t
           org-enable-sticky-header t
-          org-todo-keywords '((sequence "TODO" "DOING" "BLOCKED" "|" "DONE"))
+          org-todo-keywords '((sequence "TODO" "DOING" "BLOCKED" "|" "WON'T DO" "DONE"))
           org-todo-keyword-faces '(("todo" . "SlateGray")
                                    ("doing" . "DarkOrchid")
                                    ("blocked" . "Firebrick")
+                                   ("won't do" . "Red")
                                    ("done" . "ForestGreen"))
           ;; display custom times
           org-display-custom-times t
@@ -137,6 +139,7 @@ This function should only modify configuration layer settings."
           ;; org-roam
           org-enable-roam-support t
           org-enable-roam-server t
+          org-roam-server-port 4200
           org-roam-directory "~/Dropbox/gyan/" ;; this is overridden in local.el for work laptop
           org-roam-dailies-capture-templates
                 '(("d" "daily" plain (function org-roam-capture--get-point) ""
@@ -800,6 +803,13 @@ before packages are loaded."
          split-string
          (nth 2)))
 
+
+  (defun my/open-org-roam-server-ui ()
+    (interactive )
+    (xwidget-webkit-browse-url
+     (format "http://localhost:%n" org-roam-server-port)))
+
+
   ;; syntax-highlighting for 'dash.el function
   (eval-after-load 'dash '(dash-enable-font-lock))
 
@@ -851,9 +861,6 @@ before packages are loaded."
   (use-package org
     :defer t
     :config
-    ;; here goes your Org config :)
-    ;; to avoid conflicts with the org shipped with emacs
-
     ;; active Babel languages
     (org-babel-do-load-languages
      'org-babel-load-languages
@@ -869,28 +876,29 @@ before packages are loaded."
        (sql . t)
        (sqlite . t)))
 
-    ;; load org-tempo
-    (use-package org-tempo)
+  (use-package org-agenda
+    :after org
+    :config
+    ;; Add projectile TODOs.org files to agenda
+    (->> (org-projectile-todo-files)
+         (-filter #'file-exists-p)
+         (-concat (list org-journal-dir
+                        org-roam-directory
+                        org-jira-working-dir
+                        deft-directory))
+         (-keep 'identity)
+         (-distinct)
+         (setq org-agenda-files)))
 
-    (use-package org-projectile
-      :defer t
-      ;; :after org-capture
-      :config
-      (push (org-projectile-project-todo-entry) org-capture-templates))
+  ;; load org-tempo
+  (use-package org-tempo
+    :after org)
 
-    (use-package org-agenda
-      :defer t
-      :init
-      ;; Add projectile TODOs.org files to agenda
-      (->> (org-projectile-todo-files)
-           (-filter #'file-exists-p)
-           (-concat '(org-journal-dir
-                      org-roam-directory
-                      org-jira-working-dir
-                      deft-directory))
-           (-keep 'identity)
-           (-distinct)
-           (setq org-agenda-files))))
+  (use-package org-projectile
+    :after org
+    :config
+    (push (org-projectile-project-todo-entry)
+          org-capture-templates))
 
   ;; Capitalize keywords in SQL mode and an interactive session (e.g. psql)
   (use-package sqlup-mode
