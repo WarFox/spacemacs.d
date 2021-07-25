@@ -182,6 +182,7 @@ This function should only modify configuration layer settings."
             exec-path-from-shell-shell-name "/usr/local/bin/fish")
      shell-scripts
      slack
+     spacemacs-purpose
      (spell-checking :variables
                      spell-checking-enable-by-default nil
                      enable-flyspell-auto-completion nil)
@@ -756,9 +757,6 @@ before packages are loaded."
     (doom-themes-visual-bell-config) ;; Enable flashing mode-line on errors
     (doom-themes-treemacs-config)
     (doom-themes-org-config)) ;; Corrects (and improves) org-mode's native fontification.
-
-  (use-package window-purpose ; workaround until https://github.com/bmag/emacs-purpose/issues/158 is fixed
-    :if (= emacs-major-version 27))
 
   (use-package easy-hugo
     :init
