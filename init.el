@@ -68,26 +68,20 @@ This function should only modify configuration layer settings."
      (ansible :variables
               ansible-auto-encrypt-decrypt t)
      (auto-completion :variables
-                      auto-completion-complete-with-key-sequence nil
-                      auto-completion-complete-with-key-sequence-delay 0.1
-                      auto-completion-enable-help-tooltip t
+                      ;; default backend is company
+                      auto-completion-enable-help-tooltip 'manual
                       auto-completion-enable-snippets-in-popup t
-                      auto-completion-enable-sort-by-usage nil
-                      auto-completion-idle-delay 0.2
-                      auto-completion-minimum-prefix-length 2
-                      auto-completion-private-snippets-directory nil
-                      auto-completion-return-key-behavior 'complete
-                      auto-completion-tab-key-behavior 'cycle
-                      auto-completion-use-company-box nil)
+                      auto-completion-enable-sort-by-usage t
+                      auto-completion-idle-delay 0.0 ;; 0.0 for optimal results in lsp mode
+                      auto-completion-minimum-prefix-length 1 ;; 1 for optimal results in lsp mode
+                      auto-completion-use-company-box t)
      better-defaults
      c-c++
      (clojure :variables
-              clojure-enable-fancify-symbols nil
               clojure-enable-sayid t
               clojure-enable-linters t
               clojure-enable-clj-refactor t
-              clojure-indent-style 'align-arguments
-              clojure-align-forms-automatically t)
+              clojure-backend 'cider)
      command-log
      common-lisp
      confluence
@@ -102,19 +96,13 @@ This function should only modify configuration layer settings."
      emoji
      erlang
      (tabs :variables
-           tabs-navigation 'tabs
            tabs-gray-out-unselected 't
            tabs-height 32
-           tabs-show-icons t
-           tabs-set-modified-marker t
+           tabs-navigation 'tabs
            tabs-show-navigation-buttons t
            tabs-style "bar")
      games
-     (git :variables
-          ;; magit
-          magit-refresh-status-buffer nil
-          magit-repository-directories `(("~/Workspace/" . 3)
-                                         (,user-emacs-directory . 1)))
+     git
      github
      go
      haskell
@@ -124,9 +112,9 @@ This function should only modify configuration layer settings."
      (java :variables
            java-backend 'lsp)
      (javascript :variables
-                 javascript-import-tool 'import-js
-                 javascript-fmt-tool 'prettier
                  javascript-fmt-on-save t
+                 javascript-fmt-tool 'prettier
+                 javascript-import-tool 'import-js
                  javascript-repl `nodejs)
      jsonnet
      latex
@@ -143,64 +131,25 @@ This function should only modify configuration layer settings."
           org-enable-bootstrap-support t
           org-want-todo-bindings t
           org-enable-sticky-header t
-          org-todo-keywords '((sequence "TODO" "DOING" "BLOCKED" "|" "WON'T DO" "DONE"))
-          org-todo-keyword-faces '(("todo" . "SlateGray")
-                                   ("doing" . "DarkOrchid")
-                                   ("blocked" . "Firebrick")
-                                   ("won't do" . "Red")
-                                   ("done" . "ForestGreen"))
-          ;; display custom times
-          org-display-custom-times t
-          org-time-stamp-custom-formats '("</%d/%m/%y %a>" . "</%d/%m/%y %a %H:%M>")
-          ;; org-jira
-          org-enable-jira-support t
-          org-jira-working-dir "~/Dropbox/org-mode/org-jira" ;; override in local.el for worklaptop
-          ;; org-journal
+          org-enable-org-brain-support nil
           org-enable-org-journal-support t
-          org-journal-enable-agenda-integration t
-          org-journal-date-prefix "#+title: "
-          org-journal-file-format "%Y-%m-%d.org"
-          org-journal-date-format "%d/%m/%y %a"
-          org-journal-dir "~/Dropbox/org-mode/journals/" ;; this is overridden in local.el for worklaptop
-          ;; org-roam
           org-enable-roam-support t
           org-enable-roam-server t
-          org-roam-server-port 4200
-          org-roam-directory "~/Dropbox/gyan/" ;; this is overridden in local.el for work laptop
-          org-roam-dailies-capture-templates
-                '(("d" "daily" plain (function org-roam-capture--get-point) ""
-                   :immediate-finish t
-                   :file-name "journals/%<%Y-%m-%d>"
-                   :head "#+title: %<<%Y-%m-%d>>")) ;; same as org-journal-date-format
-          ;; projectile
-          org-projectile-file "TODOs.org"
-          org-projectile-projects-file "~/Dropbox/org-mode/Projects.org"
-          org-directory "~/Dropbox/org-mode"
-          ;; display-time
-          org-display-custom-times t
-          ;; org-time-stamp-custom-formats '("<%d/%m/%Y %a>" . "<%d/%m/%Y %a %H:%M>")
-          ;; reveal-js
-          org-enable-reveal-js-support t
-          ;; Override this on each org-file by adding
-          ;; #+REVEAL_ROOT: http://cdn.jsdelivr.net/reveal.js/3.1.0/
-          org-reveal-root "https://cdn.jsdelivr.net/npm/reveal.js/")
+          org-enable-reveal-js-support t)
      osx
      pdf
-     (plantuml :variables
-               plantuml-executable-path "/usr/local/bin/plantuml"
-               plantuml-server-url "http://localhost:8080"
-               plantuml-default-exec-mode 'server)
+     plantuml
      prettier
      (python :variables
-             python-backend 'lsp
-             python-lsp-server 'pyright
-             python-formatter 'black
-             python-format-on-save t
-             python-pipenv-activate t
-             python-test-runner 'pytest
-             python-sort-imports-on-save t
              python-auto-set-local-pyvenv-virtualenv 'on-visit ;; Automatically set pyvenv virtualenv from \".venv\".)
-             python-auto-set-local-pyenv-version 'on-visit)
+             python-auto-set-local-pyenv-version 'on-visit
+             python-format-on-save t
+             python-formatter 'black
+             python-lsp-server 'pyright
+             python-pipenv-activate t
+             python-poetry-activate t
+             python-sort-imports-on-save t
+             python-test-runner 'pytest)
      racket
      (ranger :variables
              ranger-override-dired 'deer
@@ -209,11 +158,15 @@ This function should only modify configuration layer settings."
      react
      restclient
      (ruby :variables
-           ruby-version-manager 'rbenv
+           ruby-enable-enh-ruby-mode t
+           ruby-prettier-on-save t
            ruby-test-runner 'rspec
-           ruby-enable-enh-ruby-mode t)
+           ruby-version-manager 'rbenv)
      ruby-on-rails
      rust
+     (spacemacs-evil :variables
+                     spacemacs-evil-collection-allowed-list
+                     '(xwidget-webkit))
      (scala :variables
             scala-backend 'scala-metals
             scala-auto-insert-asterisk-in-comments t
@@ -222,13 +175,11 @@ This function should only modify configuration layer settings."
      search-engine
      semantic
      (shell :variables
-            shell-default-height 30
             shell-default-shell 'vterm
             shell-default-term-shell "/usr/local/bin/fish"
             shell-file-name "/usr/local/bin/fish" ;; for async shell commands
             vterm-shell "/usr/local/bin/fish"
-            exec-path-from-shell-shell-name "/usr/local/bin/fish"
-            shell-default-position 'bottom)
+            exec-path-from-shell-shell-name "/usr/local/bin/fish")
      shell-scripts
      slack
      (spell-checking :variables
@@ -250,7 +201,8 @@ This function should only modify configuration layer settings."
      (typescript :variables
                  typescript-fmt-on-save t
                  typescript-fmt-tool 'prettier)
-     unicode-fonts
+     (unicode-fonts :variables
+                    unicode-fonts-force-multi-color-on-mac t)
      vagrant
      (version-control :variables
                       version-control-diff-tool 'diff-hl
@@ -821,15 +773,6 @@ before packages are loaded."
   (use-package term-mode
     :hook toggle-truncate-lines)
 
-  (use-package plantuml-mode
-    :defer t
-    :config
-    (setq
-     plantuml-jar-path (format
-                        "/usr/local/Cellar/plantuml/%s/libexec/plantuml.jar"
-                        (my/plantuml--version))
-     org-plantuml-jar-path plantuml-jar-path))
-
   ;; use spacemacs as $EDITOR or $GIT_EDITOR for editing git commit messages
   (global-git-commit-mode t)
 
@@ -897,12 +840,25 @@ before packages are loaded."
    langtool-language-tool-jar (format "/usr/local/Cellar/languagetool/%s/libexec/languagetool-commandline.jar" (my/langtool--version))
    langtool-default-language "en-GB"
 
+   ;; magit
+   magit-refresh-status-buffer nil
+   magit-repository-directories `(("~/Workspace/github.com/" . 2))
+
    ;; multi-term
    multi-term-scroll-show-maximum-output 't
    multi-term-scroll-to-bottom-on-output 'this
 
    ;; deft
    deft-directory "~/Dropbox/org-mode/deft"
+
+   ;; plantuml
+   plantuml-executable-path "/usr/local/bin/plantuml"
+   plantuml-server-url "http://localhost:8080"
+   plantuml-default-exec-mode 'server
+   plantuml-jar-path (format
+                      "/usr/local/Cellar/plantuml/%s/libexec/plantuml.jar"
+                      (my/plantuml--version))
+   org-plantuml-jar-path plantuml-jar-path
 
    ;; Projectile enable/disable caching
    projectile-enable-caching t
@@ -920,8 +876,51 @@ before packages are loaded."
    ;; use x-widget-webkit-browse-url as default browse-url
    browse-url-browser-function 'xwidget-webkit-browse-url)
 
+  (use-package clojure-mode
+    :config
+    (setq clojure-indent-style 'align-arguments
+          clojure-align-forms-automatically t)
+    :hook '(aggressive-indent-mode))
+
   (use-package org
     :defer t
+    :init
+    (setq
+     org-todo-keywords '((sequence "TODO" "DOING" "BLOCKED" "|" "WON'T DO" "DONE"))
+     org-todo-keyword-faces '(("todo" . "SlateGray")
+                              ("doing" . "DarkOrchid")
+                              ("blocked" . "Firebrick")
+                              ("won't do" . "Red")
+                              ("done" . "ForestGreen"))
+     ;; display custom times
+     org-display-custom-times t
+     org-directory "~/Dropbox/org-mode"
+     org-time-stamp-custom-formats '("</%d/%m/%y %a>" . "</%d/%m/%y %a %H:%M>")
+     ;; org-jira
+     org-jira-working-dir "~/Dropbox/org-mode/org-jira" ;; override in local.el for worklaptop
+     ;; org-journal
+     org-journal-enable-agenda-integration t
+     org-journal-date-prefix "#+title: "
+     org-journal-file-format "%Y-%m-%d.org"
+     org-journal-date-format "%d/%m/%y %a"
+     org-journal-dir "~/Dropbox/org-mode/journals/" ;; this is overridden in local.el for worklaptop
+     ;; projectile
+     org-projectile-file "TODOs.org"
+     org-projectile-projects-file "~/Dropbox/org-mode/Projects.org"
+     ;; org-roam
+     org-roam-directory "~/Dropbox/gyan/" ;; this is overridden in local.el for work laptop
+     org-roam-server-port 4200
+     org-roam-v2-ack t
+     org-roam-dailies-capture-templates
+        '(("d" "daily" plain (function org-roam-capture--get-point) ""
+            :immediate-finish t
+            :file-name "journals/%<%Y-%m-%d>"
+            :head "#+title: %<<%Y-%m-%d>>")) ;; same as org-journal-date-format
+     org-time-stamp-custom-formats '("<%d/%m/%Y %a>" . "<%d/%m/%Y %a %H:%M>")
+     ;; reveal-js
+     ;; Override this on each org-file by adding
+     ;; #+REVEAL_ROOT: http://cdn.jsdelivr.net/reveal.js/3.1.0/
+     org-reveal-root "https://cdn.jsdelivr.net/npm/reveal.js/")
     :config
     ;; active Babel languages
     (org-babel-do-load-languages
@@ -936,7 +935,7 @@ before packages are loaded."
        (restclient . t)
        (shell . t)
        (sql . t)
-       (sqlite . t)))
+       (sqlite . t))))
 
   (use-package org-agenda
     :after org
