@@ -2,6 +2,32 @@
 ;; This file is loaded by Spacemacs at startup.
 ;; It must be stored in your home directory.
 
+;;;; Configuration
+;;;; https://github.com/rhblind/.spacemacs.d/blob/master/init.el
+
+;; Defer garbage collection further back in the startup process.
+;; This is reset by spacemacs (dotspacemacs-gc-cons) after spacemacs
+;; has completed loading.
+(setq gc-cons-threshold most-positive-fixnum)
+
+;; Adopt a sneaky garbage collection strategy of waiting until idle time to
+;; collect; staving off the collector while the user is working.
+(add-hook 'emacs-startup-hook #'(lambda ()
+                                  (setq gcmh-idle-delay 5
+                                        gcmh-high-cons-threshold (* 16 1024 1024)  ;; 16mb
+                                        gcmh-verbose nil)))
+
+;;;;; Byte compilation blacklist
+(if (require 'comp nil t)
+    (dolist (blacklist '(;; Add packages to this list to blacklist them from native compilation
+                         ))
+      (add-to-list 'comp-bootstrap-black-list blacklist)
+      (add-to-list 'comp-deferred-compilation-black-list blacklist))
+  (message "Library 'comp not found."))
+
+(defvar server? (daemonp)
+  "Alias `dotspacemacs-enable-server'. Set true if running emacs as a daemon")
+
 ;; Copyright (C) 2016 - 2020 by Deepu Mohan Puthrote
 
 (defun dotspacemacs/layers ()
@@ -254,6 +280,7 @@ This function should only modify configuration layer settings."
                                       github-review
                                       gradle-mode
                                       groovy-mode
+                                      gcmh
                                       highlight-indent-guides
                                       langtool
                                       org-tree-slide
@@ -280,7 +307,10 @@ This function should only modify configuration layer settings."
   "Initialization:
 This function is called at the very beginning of Spacemacs startup,
 before layer configuration.
-It should only modify the values of Spacemacs settings."
+It should only modify the values of Spacemacs settings.
+
+Check (dotspacemacs/get-variable-string-list) for all vars you can configure.
+"
   ;; This setq-default sexp is an exhaustive list of all the supported
   ;; spacemacs settings.
   (setq-default
@@ -300,7 +330,7 @@ It should only modify the values of Spacemacs settings."
    ;; To load it when starting Emacs add the parameter `--dump-file'
    ;; when invoking Emacs 27.1 executable on the command line, for instance:
    ;;   ./emacs --dump-file=$HOME/.emacs.d/.cache/dumps/spacemacs-27.1.pdmp
-   ;; (default spacemacs-27.1.pdmp)
+   ;; (default (format "spacemacs-%s.pdmp" emacs-version))
    dotspacemacs-emacs-dumper-dump-file (format "spacemacs-%s.pdmp" emacs-version)
 
    ;; If non-nil ELPA repositories are contacted via HTTPS whenever it's
@@ -330,7 +360,9 @@ It should only modify the values of Spacemacs settings."
 
    ;; If non-nil then Spacelpa repository is the primary source to install
    ;; a locked version of packages. If nil then Spacemacs will install the
-   ;; latest version of packages from MELPA. (default nil)
+   ;; latest version of packages from MELPA. Spacelpa is currently in
+   ;; experimental state please use only for testing purposes.
+   ;; (default nil)
    dotspacemacs-use-spacelpa nil
 
    ;; If non-nil then verify the signature for downloaded Spacelpa archives.
@@ -356,9 +388,6 @@ It should only modify the values of Spacemacs settings."
    ;; (default 'vim)
    dotspacemacs-editing-style 'hybrid
 
-   ;; If non-nil output loading progress in `*Messages*' buffer. (default nil)
-   dotspacemacs-verbose-loading nil
-
    ;; If non-nil show the version string in the Spacemacs buffer. It will
    ;; appear as (spacemacs version)@(emacs version)
    ;; (default t)
@@ -375,7 +404,7 @@ It should only modify the values of Spacemacs settings."
    ;; List of items to show in startup buffer or an association list of
    ;; the form `(list-type . list-size)`. If nil then it is disabled.
    ;; Possible values for list-type are:
-   ;; `recents' `bookmarks' `projects' `agenda' `todos'.
+   ;; `recents' `recents-by-project' `bookmarks' `projects' `agenda' `todos'.
    ;; List sizes may be nil, in which case
    ;; `spacemacs-buffer-startup-lists-length' takes effect.
    ;; The exceptional case is `recents-by-project', where list-type must be a
@@ -388,6 +417,12 @@ It should only modify the values of Spacemacs settings."
 
    ;; True if the home buffer should respond to resize events. (default t)
    dotspacemacs-startup-buffer-responsive t
+
+   ;; Show numbers before the startup list lines. (default t)
+   dotspacemacs-show-startup-list-numbers t
+
+   ;; The minimum delay in seconds between number key presses. (default 0.4)
+   dotspacemacs-startup-buffer-multi-digit-delay 0.4
 
    ;; Default major mode for a new empty buffer. Possible values are mode
    ;; names such as `text-mode'; and `nil' to use Fundamental mode.
@@ -505,7 +540,7 @@ It should only modify the values of Spacemacs settings."
 
    ;; Which-key delay in seconds. The which-key buffer is the popup listing
    ;; the commands bound to the current keystroke sequence. (default 0.4)
-   dotspacemacs-which-key-delay 0.4
+   dotspacemacs-which-key-delay 0.1
 
    ;; Which-key frame position. Possible values are `right', `bottom' and
    ;; `right-then-bottom'. right-then-bottom tries to display the frame to the
@@ -569,6 +604,10 @@ It should only modify the values of Spacemacs settings."
    ;; when it reaches the top or bottom of the screen. (default t)
    dotspacemacs-smooth-scrolling t
 
+   ;; Show the scroll bar while scrolling. The auto hide time can be configured
+   ;; by setting this variable to a number. (default t)
+   dotspacemacs-scroll-bar-while-scrolling t
+
    ;; Control line numbers activation.
    ;; If set to `t', `relative' or `visual' then line numbers are enabled in all
    ;; `prog-mode' and `text-mode' derivatives. If set to `relative', line
@@ -598,9 +637,14 @@ It should only modify the values of Spacemacs settings."
    ;; (default 'evil)
    dotspacemacs-folding-method 'evil
 
-   ;; If non-nil `smartparens-strict-mode' will be enabled in programming modes.
+   ;; If non-nil and `dotspacemacs-activate-smartparens-mode' is also non-nil,
+   ;; `smartparens-strict-mode' will be enabled in programming modes.
    ;; (default nil)
    dotspacemacs-smartparens-strict-mode nil
+
+   ;; If non-nil smartparens-mode will be enabled in programming modes.
+   ;; (default t)
+   dotspacemacs-activate-smartparens-mode t
 
    ;; If non-nil pressing the closing parenthesis `)' key in insert mode passes
    ;; over any automatically added closing parenthesis, bracket, quote, etc...
@@ -614,7 +658,7 @@ It should only modify the values of Spacemacs settings."
 
    ;; If non-nil, start an Emacs server if one is not already running.
    ;; (default nil)
-   dotspacemacs-enable-server t
+   dotspacemacs-enable-server server?
 
    ;; Set the emacs server socket location.
    ;; If nil, uses whatever the Emacs default is, otherwise a directory path
@@ -625,7 +669,7 @@ It should only modify the values of Spacemacs settings."
 
    ;; If non-nil, advise quit functions to keep server open when quitting.
    ;; (default nil)
-   dotspacemacs-persistent-server t
+   dotspacemacs-persistent-server server?
 
    ;; List of search tool executable names. Spacemacs uses the first installed
    ;; tool of the list. Supported tools are `rg', `ag', `pt', `ack' and `grep'.
@@ -648,6 +692,9 @@ It should only modify the values of Spacemacs settings."
    ;; %n - Narrow if appropriate
    ;; %z - mnemonics of buffer, terminal, and keyboard coding systems
    ;; %Z - like %z, but including the end-of-line format
+   ;; If nil then Spacemacs uses default `frame-title-format' to avoid
+   ;; performance issues, instead of calculating the frame title by
+   ;; `spacemacs/title-prepare' all the time.
    ;; (default "%I@%S")
    dotspacemacs-frame-title-format "%I@%S [%t] %a"
 
@@ -672,6 +719,9 @@ It should only modify the values of Spacemacs settings."
    ;; (default t)
    dotspacemacs-use-clean-aindent-mode t
 
+   ;; Accept SPC as y for prompts if non nil. (default nil)
+   dotspacemacs-use-SPC-as-y nil
+
    ;; If non-nil shift your number row to match the entered keyboard layout
    ;; (only in insert state). Currently supported keyboard layouts are:
    ;; `qwerty-us', `qwertz-de' and `querty-ca-fr'.
@@ -690,7 +740,10 @@ It should only modify the values of Spacemacs settings."
 
    ;; If nil the home buffer shows the full path of agenda items
    ;; and todos. If non nil only the file name is shown.
-   dotspacemacs-home-shorten-agenda-source nil))
+   dotspacemacs-home-shorten-agenda-source nil
+
+   ;; If non-nil then byte-compile some of Spacemacs files.
+   dotspacemacs-byte-compile t))
 
 (defun dotspacemacs/user-env ()
   "Environment variables setup.
