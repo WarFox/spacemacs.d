@@ -5,10 +5,13 @@
 ;;;; Configuration
 ;;;; https://github.com/rhblind/.spacemacs.d/blob/master/init.el
 
-;; Defer garbage collection further back in the startup process.
-;; This is reset by spacemacs (dotspacemacs-gc-cons) after spacemacs
-;; has completed loading.
-(setq gc-cons-threshold most-positive-fixnum)
+(setq
+ ;; Defer garbage collection further back in the startup process.
+ ;; This is reset by spacemacs (dotspacemacs-gc-cons) after spacemacs
+ ;; has completed loading.
+ gc-cons-threshold most-positive-fixnum
+ ;; Suppres warning message from org-roam-v2
+ org-roam-v2-ack t)
 
 ;; Adopt a sneaky garbage collection strategy of waiting until idle time to
 ;; collect; staving off the collector while the user is working.
@@ -762,8 +765,6 @@ before packages are loaded."
         ;; multi-term
         multi-term-scroll-show-maximum-output 't
         multi-term-scroll-to-bottom-on-output 'this
-
-        org-roam-v2-ack t
 
         ;; Projectile enable/disable caching
         projectile-enable-caching t
