@@ -729,52 +729,11 @@ configuration.
 Put your configuration code here, except for variables that should be set
 before packages are loaded."
 
-  ;; ui
   ;; Change evil-hybrid-state-cursor cursor to box
   (spacemacs/add-evil-cursor "hybrid" "SkyBlue2" 'box)
 
-  (use-package fira-code-mode
-    :if (display-graphic-p)
-    :custom
-    (fira-code-mode-disabled-ligatures '())  ; ligatures you don't want
-    :hook prog-mode)                         ; mode to enable fira-code-mode in
-
-  ;; highlight indent
-  (use-package highlight-indent-guides-mode
-    :custom
-    (highlight-indent-guides-method 'bitmap)
-    :hook prog-mode)
-
-  ;; doom theme start
-  (use-package doom-themes
-    :init
-    (setq doom-themes-enable-bold t    ; if nil, bold is universally disabled
-          doom-themes-enable-italic t  ; if nil, italics is universally disabled
-          doom-themes-treemacs-theme "doom-colors") ; use the colorful treemacs theme
-    :config
-    (doom-themes-visual-bell-config) ;; Enable flashing mode-line on errors
-    (doom-themes-treemacs-config)
-    (doom-themes-org-config)) ;; Corrects (and improves) org-mode's native fontification.
-
-  (use-package easy-hugo
-    :init
-    (setq easy-hugo-basedir "~/Workspace/Personal/tech/"
-          easy-hugo-url "https://deepumohan.com/"
-          easy-hugo-postdir "content"
-          easy-hugo-amazon-s3-bucket-name "your-amazon-s3-bucket-name"
-          easy-hugo-default-ext ".org"
-          easy-hugo-previewtime "300")
-    :bind ("C-c C-e" . easy-hugo))
-
-  (use-package term-mode
-    :hook toggle-truncate-lines)
-
   ;; use spacemacs as $EDITOR or $GIT_EDITOR for editing git commit messages
   (global-git-commit-mode t)
-
-  ;; handle long lines
-  (use-package so-long
-    :config (global-so-long-mode 1))
 
   ;; frame
   (add-to-list 'default-frame-alist
@@ -793,124 +752,145 @@ before packages are loaded."
   ;; (global-set-key (kbd "M-3")(lambda () (interactive) (insert "#")))
 
   (setq ns-alternate-modifier 'meta
-        ns-right-alternate-modifier 'none)
+        ns-right-alternate-modifier 'none
 
-  ;; utility functions
-  (defun my/langtool--version ()
-    (->> "languagetool --version"
-         shell-command-to-string
-         split-string
-         (nth 2)))
+        auth-sources '("~/.authinfo.gpg" "~/.authinfo" "~/.netrc")
+        evil-escape-key-sequence "jk"
 
-  (defun my/plantuml--version ()
-    (->> "plantuml -version"
-         shell-command-to-string
-         split-string
-         (nth 2)))
+        ;; javascript
+        js2-basic-offset 4
+        js-indent-level 2
 
-  (defun my/open-org-roam-server-ui ()
-    (interactive )
-    (xwidget-webkit-browse-url
-     (format "http://localhost:%n" org-roam-server-port)))
+        ;; multi-term
+        multi-term-scroll-show-maximum-output 't
+        multi-term-scroll-to-bottom-on-output 'this
 
-  ;; bulk setq section
-  (setq
-   auth-sources '("~/.authinfo.gpg" "~/.authinfo" "~/.netrc")
-   evil-escape-key-sequence "jk"
+        org-roam-v2-ack t
 
-   ;; spell-checking use aspell and default to british language
-   ispell-program-name "aspell"
-   ispell-dictionary "british"
+        ;; Projectile enable/disable caching
+        projectile-enable-caching t
 
-   ;; javascript
-   js2-basic-offset 4
-   js-indent-level 2
+        ;; pytest fish configuration
+        ;; pytest-cmd-format-string "cd %s; and  %s %s %s"
+        ;; sh configuration
+        pytest-cmd-format-string "cd %s &  %s %s %s"
 
-   ;; langtool settings
-   langtool-language-tool-jar (format "/usr/local/Cellar/languagetool/%s/libexec/languagetool-commandline.jar" (my/langtool--version))
-   langtool-default-language "en-GB"
+        python-shell-completion-native-enable nil
 
-   ;; magit
-   magit-refresh-status-buffer nil
-   magit-repository-directories `(("~/Workspace/github.com/" . 2))
+        blacken-line-length 100
+        blacken-skip-string-normalization t
 
-   ;; multi-term
-   multi-term-scroll-show-maximum-output 't
-   multi-term-scroll-to-bottom-on-output 'this
-
-   ;; deft
-   deft-directory "~/Dropbox/org-mode/deft"
-
-   ;; plantuml
-   plantuml-executable-path "/usr/local/bin/plantuml"
-   plantuml-server-url "http://localhost:8080"
-   plantuml-default-exec-mode 'server
-   plantuml-jar-path (format
-                      "/usr/local/Cellar/plantuml/%s/libexec/plantuml.jar"
-                      (my/plantuml--version))
-   org-plantuml-jar-path plantuml-jar-path
-
-   ;; Projectile enable/disable caching
-   projectile-enable-caching t
-
-   ;; pytest fish configuration
-   ;; pytest-cmd-format-string "cd %s; and  %s %s %s"
-   ;; sh configuration
-   pytest-cmd-format-string "cd %s &  %s %s %s"
-
-   python-shell-completion-native-enable nil
-
-   blacken-line-length 100
-   blacken-skip-string-normalization t
-
-   ;; use x-widget-webkit-browse-url as default browse-url
-   browse-url-browser-function 'xwidget-webkit-browse-url)
+        ;; use x-widget-webkit-browse-url as default browse-url
+        browse-url-browser-function 'xwidget-webkit-browse-url)
 
   (use-package clojure-mode
-    :config
-    (setq clojure-indent-style 'align-arguments
-          clojure-align-forms-automatically t)
-    :hook '(aggressive-indent-mode))
+    :defer t
+    :custom
+    (clojure-indent-style 'align-arguments)
+    (clojure-align-forms-automatically t)
+    :hook
+    aggressive-indent-mode)
 
-  (use-package org
+  (use-package deft
+    :defer t
+    :custom
+    (deft-directory "~/Dropbox/org-mode/deft")
+    :config
+    (add-to-list 'org-agenda-files deft-directory))
+
+  ;; doom theme start
+  (use-package doom-themes
+    :defer t
+    :custom
+    ; if nil, bold is universally disabled
+    (doom-themes-enable-bold t)
+    ; if nil, italics is universally disabled
+    (doom-themes-enable-italic t)
+    ; use the colorful treemacs theme
+    (doom-themes-treemacs-theme "doom-colors")
+    :config
+    ;; Enable flashing mode-line on errors
+    (doom-themes-visual-bell-config)
+    (doom-themes-treemacs-config)
+    ;; Corrects (and improves) org-mode's native fontification.
+    (doom-themes-org-config))
+
+  (use-package easy-hugo
+    :defer t
+    :custom
+    (easy-hugo-basedir "~/Workspace/Personal/tech/")
+    (easy-hugo-url "https://deepumohan.com/")
+    (easy-hugo-postdir "content")
+    (easy-hugo-amazon-s3-bucket-name "your-amazon-s3-bucket-name")
+    (easy-hugo-default-ext ".org")
+    (easy-hugo-previewtime "300")
+    :bind
+    ("C-c C-e" . easy-hugo))
+
+  (use-package fira-code-mode
+    :defer t
+    :if (display-graphic-p)
+    :custom
+    (fira-code-mode-disabled-ligatures '())  ; ligatures you don't want
+    :hook
+    prog-mode)                         ; mode to enable fira-code-mode in
+
+  ;; highlight indent
+  (use-package highlight-indent-guides-mode
+    :defer t
+    :custom
+    (highlight-indent-guides-method 'bitmap)
+    :hook
+    prog-mode)
+
+  (use-package ispell
+    :defer t
+    :custom
+    (ispell-program-name "aspell")
+    (ispell-dictionary "british"))
+
+  (use-package langtool
     :defer t
     :init
-    (setq
-     org-todo-keywords '((sequence "TODO" "DOING" "BLOCKED" "|" "WON'T DO" "DONE"))
-     org-todo-keyword-faces '(("todo" . "SlateGray")
+    (defun warfox/langtool--version ()
+      (->> "languagetool --version"
+           shell-command-to-string
+           split-string
+           (nth 2)))
+    :custom
+    (langtool-language-tool-jar (format
+                                 "/usr/local/Cellar/languagetool/%s/libexec/languagetool-commandline.jar"
+                                 (warfox/langtool--version)))
+    (langtool-default-language "en-GB"))
+
+  (use-package magit
+    :defer t
+    :custom
+    (magit-refresh-status-buffer nil)
+    (magit-repository-directories `(("~/Workspace/github.com/" . 2))))
+
+  (use-package markdown
+    :defer t
+    :hook
+    (markdown-mode . auto-fill-mode))
+
+  (use-package org
+    :custom
+    (org-todo-keywords '((sequence "TODO" "DOING" "BLOCKED" "|" "WON'T DO" "DONE")))
+    (org-todo-keyword-faces '(("todo" . "SlateGray")
                               ("doing" . "DarkOrchid")
                               ("blocked" . "Firebrick")
                               ("won't do" . "Red")
-                              ("done" . "ForestGreen"))
+                              ("done" . "ForestGreen")))
      ;; display custom times
-     org-display-custom-times t
-     org-directory "~/Dropbox/org-mode"
-     org-time-stamp-custom-formats '("</%d/%m/%y %a>" . "</%d/%m/%y %a %H:%M>")
-     ;; org-jira
-     org-jira-working-dir "~/Dropbox/org-mode/org-jira" ;; override in local.el for worklaptop
-     ;; org-journal
-     org-journal-enable-agenda-integration t
-     org-journal-date-prefix "#+title: "
-     org-journal-file-format "%Y-%m-%d.org"
-     org-journal-date-format "%d/%m/%y %a"
-     org-journal-dir "~/Dropbox/org-mode/journals/" ;; this is overridden in local.el for worklaptop
-     ;; projectile
-     org-projectile-file "TODOs.org"
-     org-projectile-projects-file "~/Dropbox/org-mode/Projects.org"
-     ;; org-roam
-     org-roam-directory "~/Dropbox/gyan/" ;; this is overridden in local.el for work laptop
-     org-roam-server-port 4200
-     org-roam-v2-ack t
-     org-roam-dailies-capture-templates
-        '(("d" "daily" plain (function org-roam-capture--get-point) ""
-            :immediate-finish t
-            :file-name "journals/%<%Y-%m-%d>"
-            :head "#+title: %<<%Y-%m-%d>>")) ;; same as org-journal-date-format
-     org-time-stamp-custom-formats '("<%d/%m/%Y %a>" . "<%d/%m/%Y %a %H:%M>")
-     ;; reveal-js
+    (org-display-custom-times t)
+    (org-directory "~/Dropbox/org-mode")
+    (org-time-stamp-custom-formats '("</%d/%m/%y %a>" . "</%d/%m/%y %a %H:%M>"))
+    (org-time-stamp-custom-formats '("<%d/%m/%Y %a>" . "<%d/%m/%Y %a %H:%M>"))
+    ;; reveal-js
      ;; Override this on each org-file by adding
      ;; #+REVEAL_ROOT: http://cdn.jsdelivr.net/reveal.js/3.1.0/
-     org-reveal-root "https://cdn.jsdelivr.net/npm/reveal.js/")
+    (org-reveal-root "https://cdn.jsdelivr.net/npm/reveal.js/")
     :config
     ;; active Babel languages
     (org-babel-do-load-languages
@@ -925,35 +905,94 @@ before packages are loaded."
        (restclient . t)
        (shell . t)
        (sql . t)
-       (sqlite . t))))
+       (sqlite . t)))
+    :hook
+    (org-mode . auto-fill-mode))
 
   (use-package org-agenda
-    :after org
+    :defer t
+    :after
+    (org-roam org-journal org-projectile)
+    :init
+    (setq
+     org-agenda-skip-unavailable-files t
+     org-agenda-inhibit-startup t)
     :config
-    ;; Add projectile TODOs.org files to agenda
-    (->> (org-projectile-todo-files)
-         (-filter #'file-exists-p)
-         (-concat (list org-journal-dir
-                        org-roam-directory
-                        org-jira-working-dir
-                        deft-directory))
-         (-keep 'identity)
-         (-distinct)
-         (setq org-agenda-files)))
+    (setq org-agenda-files
+          (->> (org-projectile-todo-files)
+               (-filter #'file-exists-p)
+               (-keep 'identity)
+               (-distinct)))
+    (add-to-list 'org-agenda-files org-roam-directory)
+    (add-to-list 'org-agenda-files org-journal-dir))
+
+  (use-package org-jira
+    :defer t
+    :custom
+    (org-jira-working-dir "~/Dropbox/org-mode/org-jira")
+    :config
+    (add-to-list 'org-agenda-files org-jira-working-dir))
+
+  (use-package org-journal
+    :defer t
+    :custom
+    (org-journal-enable-agenda-integration t)
+    (org-journal-date-prefix "#+title: ")
+    (org-journal-file-format "%Y-%m-%d.org")
+    (org-journal-date-format "%d/%m/%y %a")
+    (org-journal-dir "~/Dropbox/org-mode/journals/"))
+
+  (use-package org-roam
+    :defer t
+    :custom
+    (org-roam-directory (file-truename"~/Dropbox/gyan/"))
+    (org-roam-dailies-capture-templates
+     '(("d" "daily" plain (function org-roam-capture--get-point) ""
+       :immediate-finish t
+       :file-name "journals/%<%Y-%m-%d>"
+       :head "#+title: %<<%Y-%m-%d>>"))))
 
   ;; load org-tempo
   (use-package org-tempo
     :after org)
 
   (use-package org-projectile
-    :after org
+    :defer t
+    :custom
+    (org-projectile-file "TODOs.org")
+    (org-projectile-projects-file "~/Dropbox/org-mode/Projects.org")
     :config
-    (push (org-projectile-project-todo-entry)
-          org-capture-templates))
+    (progn
+      (push (org-projectile-project-todo-entry)
+            org-capture-templates)))
 
-  ;; Capitalize keywords in SQL mode and an interactive session (e.g. psql)
-  (use-package sqlup-mode
-    :hook '(sql-mode sql-interative-mode))
+  (use-package plantuml-mode
+    :defer t
+    :init
+    (defun warfox/plantuml--version ()
+      (->> "plantuml -version"
+           shell-command-to-string
+           split-string
+           (nth 2)))
+    :custom
+    (plantuml-executable-path "/usr/local/bin/plantuml")
+    (plantuml-server-url "http://localhost:8080")
+    (plantuml-default-exec-mode 'server)
+    (plantuml-jar-path (format
+                        "/usr/local/Cellar/plantuml/%s/libexec/plantuml.jar"
+                        (warfox/plantuml--version)))
+    :config
+    (setq org-plantuml-jar-path plantuml-jar-path))
+
+  ;; handle long lines
+  (use-package so-long
+    :defer t
+    :config (global-so-long-mode 1))
+
+  (defun my/open-org-roam-server-ui ()
+    (interactive )
+    (xwidget-webkit-browse-url
+     (format "http://localhost:%n" org-roam-server-port)))
 
   (defun my/change-file-extension ()
     (interactive)
