@@ -178,8 +178,7 @@ This function should only modify configuration layer settings."
             shell-default-shell 'vterm
             shell-default-term-shell "/usr/local/bin/fish"
             shell-file-name "/usr/local/bin/fish" ;; for async shell commands
-            vterm-shell "/usr/local/bin/fish"
-            exec-path-from-shell-shell-name "/usr/local/bin/fish")
+            vterm-shell "/usr/local/bin/fish")
      shell-scripts
      slack
      spacemacs-purpose
@@ -226,7 +225,6 @@ This function should only modify configuration layer settings."
                                       easy-hugo
                                       ejc-sql
                                       eterm-256color
-                                      exec-path-from-shell
                                       feature-mode
                                       fira-code-mode
                                       format-sql
@@ -784,12 +782,6 @@ before packages are loaded."
 
   (add-to-list 'default-frame-alist
                '(ns-appearance . dark)) ;; or light - depending on your theme
-
-
-  ;; https://github.com/purcell/exec-path-from-shell
-  (exec-path-from-shell-initialize)
-  (add-to-list 'exec-path "/usr/local/bin")
-  (exec-path-from-shell-copy-env "PATH")
 
   ;; M-3 is mapped to window 3, so map M-# to get £ sign GBP (pound sign)
   ;; (This is for Dvorak layout, UK layout may need to map # instead)
