@@ -176,9 +176,7 @@ This function should only modify configuration layer settings."
      semantic
      (shell :variables
             shell-default-shell 'vterm
-            shell-default-term-shell "/usr/local/bin/fish"
-            shell-file-name "/usr/local/bin/fish" ;; for async shell commands
-            vterm-shell "/usr/local/bin/fish")
+            shell-file-name "/usr/local/bin/fish")
      shell-scripts
      slack
      spacemacs-purpose
