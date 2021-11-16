@@ -87,6 +87,7 @@ This function should only modify configuration layer settings."
               clojure-backend 'cider)
      command-log
      common-lisp
+     compleseus
      confluence
      copy-as-format
      csv
@@ -109,6 +110,7 @@ This function should only modify configuration layer settings."
      github
      go
      haskell
+     helpful
      html
      imenu-list
      ivy
@@ -121,7 +123,12 @@ This function should only modify configuration layer settings."
                  javascript-repl `nodejs)
      jsonnet
      latex
-     lsp
+     (lsp :variables
+          lsp-headerline-breadcrumb-enable nil
+          lsp-lens-enable nil
+          lsp-modeline-code-actions-enable nil
+          lsp-modeline-diagnostics-enable nil
+          lsp-use-lsp-ui nil)
      (markdown :variables
                markdown-fmt-tool 'prettier
                markdown-live-preview-engine 'vmd)
@@ -192,10 +199,12 @@ This function should only modify configuration layer settings."
           sql-auto-indent t)
      syntax-checking
      (terraform :variables
-                terraform-auto-format-on-save t)
+                terraform-auto-format-on-save t
+                terraform-backend 'company-terraform)
      (treemacs :variables
-               treemacs-use-filewatch-mode t
-               treemacs-use-follow-mode t
+               treemacs-use-all-the-icons-theme t
+               treemacs-use-filewatch-mode nil
+               treemacs-use-follow-mode 'tag
                treemacs-use-icons-dired t
                treemcas-use-git-mode 'deferred
                treemacs-use-scope-type 'Perspectives)
@@ -213,15 +222,14 @@ This function should only modify configuration layer settings."
      xkcd
      yaml)
 
-   ;; List of additional packages that will be installed without being
-   ;; wrapped in a layer. If you need some configuration for these
-   ;; packages, then consider creating a layer. You can also put the
-   ;; configuration in `dotspacemacs/user-config'.
-   ;; To use a local version of a package, use the `:location' property:
-   ;; '(your-package :location "~/path/to/your-package/")
-   ;; Also include the dependencies as they will not be resolved automatically.
-   dotspacemacs-additional-packages '(all-the-icons
-                                      atomic-chrome
+   ;; List of additional packages that will be installed without being wrapped
+   ;; in a layer (generally the packages are installed only and should still be
+   ;; loaded using load/require/use-package in the user-config section below in
+   ;; this file). If you need some configuration for these packages, then
+   ;; consider creating a layer. You can also put the configuration in
+   ;; `dotspacemacs/user-config'. To use a local version of a package, use the
+   ;; `:location' property: '(your-package :location "~/path/to/your-package/")
+   dotspacemacs-additional-packages '(atomic-chrome
                                       doom-themes
                                       easy-hugo
                                       ejc-sql
@@ -237,7 +245,6 @@ This function should only modify configuration layer settings."
                                       langtool
                                       org-tree-slide
                                       so-long
-                                      sqlup-mode
                                       xwwp)
 
    ;; A list of packages that cannot be updated.
@@ -308,7 +315,7 @@ Check (dotspacemacs/get-variable-string-list) for all vars you can configure.
    ;; Setting this >= 1 MB should increase performance for lsp servers
    ;; in emacs 27.
    ;; (default (* 1024 1024))
-   dotspacemacs-read-process-output-max (* 1024 1024 4)
+   dotspacemacs-read-process-output-max (* 1024 1024 10)
 
    ;; If non-nil then Spacelpa repository is the primary source to install
    ;; a locked version of packages. If nil then Spacemacs will install the
@@ -399,9 +406,9 @@ Check (dotspacemacs/get-variable-string-list) for all vars you can configure.
    ;; List of themes, the first of the list is loaded when spacemacs starts.
    ;; Press `SPC T n' to cycle to the next theme in the list (works great
    ;; with 2 themes variants, one dark and one light)
-   dotspacemacs-themes '(doom-dracula
-                         spacemacs-dark
-                         spacemacs-light)
+   dotspacemacs-themes '(doom-one
+                         spacemacs-light
+                         spacemacs-dark)
 
    ;; Set the theme for the Spaceline. Supported themes are `spacemacs',
    ;; `all-the-icons', `custom', `doom', `vim-powerline' and `vanilla'. The
@@ -564,8 +571,8 @@ Check (dotspacemacs/get-variable-string-list) for all vars you can configure.
    ;; If set to `t', `relative' or `visual' then line numbers are enabled in all
    ;; `prog-mode' and `text-mode' derivatives. If set to `relative', line
    ;; numbers are relative. If set to `visual', line numbers are also relative,
-   ;; but lines are only visual lines are counted. For example, folded lines
-   ;; will not be counted and wrapped lines are counted as multiple lines.
+   ;; but only visual lines are counted. For example, folded lines will not be
+   ;; counted and wrapped lines are counted as multiple lines.
    ;; This variable can also be set to a property list for finer control:
    ;; '(:relative nil
    ;;   :visual nil
@@ -664,14 +671,14 @@ Check (dotspacemacs/get-variable-string-list) for all vars you can configure.
    ;; (default nil)
    dotspacemacs-whitespace-cleanup 'trailing
 
-   ;; If non nil activate `clean-aindent-mode' which tries to correct
-   ;; virtual indentation of simple modes. This can interfer with mode specific
+   ;; If non-nil activate `clean-aindent-mode' which tries to correct
+   ;; virtual indentation of simple modes. This can interfere with mode specific
    ;; indent handling like has been reported for `go-mode'.
    ;; If it does deactivate it here.
    ;; (default t)
    dotspacemacs-use-clean-aindent-mode t
 
-   ;; Accept SPC as y for prompts if non nil. (default nil)
+   ;; Accept SPC as y for prompts if non-nil. (default nil)
    dotspacemacs-use-SPC-as-y nil
 
    ;; If non-nil shift your number row to match the entered keyboard layout
@@ -691,7 +698,7 @@ Check (dotspacemacs/get-variable-string-list) for all vars you can configure.
    dotspacemacs-pretty-docs t
 
    ;; If nil the home buffer shows the full path of agenda items
-   ;; and todos. If non nil only the file name is shown.
+   ;; and todos. If non-nil only the file name is shown.
    dotspacemacs-home-shorten-agenda-source nil
 
    ;; If non-nil then byte-compile some of Spacemacs files.
@@ -766,9 +773,6 @@ before packages are loaded."
         multi-term-scroll-show-maximum-output 't
         multi-term-scroll-to-bottom-on-output 'this
 
-        ;; Projectile enable/disable caching
-        projectile-enable-caching t
-
         ;; pytest fish configuration
         ;; pytest-cmd-format-string "cd %s; and  %s %s %s"
         ;; sh configuration
@@ -797,7 +801,7 @@ before packages are loaded."
     :config
     (add-to-list 'org-agenda-files deft-directory))
 
-  ;; doom theme start
+  ;; ;; doom theme start
   (use-package doom-themes
     :defer t
     :custom
@@ -866,6 +870,7 @@ before packages are loaded."
     :defer t
     :custom
     (magit-refresh-status-buffer nil)
+    (magit-post-refresh-hook nil)
     (magit-repository-directories `(("~/Workspace/github.com/" . 2))))
 
   (use-package markdown
@@ -890,21 +895,6 @@ before packages are loaded."
      ;; Override this on each org-file by adding
      ;; #+REVEAL_ROOT: http://cdn.jsdelivr.net/reveal.js/3.1.0/
     (org-reveal-root "https://cdn.jsdelivr.net/npm/reveal.js/")
-    :config
-    ;; active Babel languages
-    (org-babel-do-load-languages
-     'org-babel-load-languages
-     '(
-       (clojure . t)
-       (emacs-lisp . t)
-       (http . t)
-       (lisp . t)
-       (plantuml . t)
-       (python . t)
-       (restclient . t)
-       (shell . t)
-       (sql . t)
-       (sqlite . t)))
     :hook
     (org-mode . auto-fill-mode))
 
