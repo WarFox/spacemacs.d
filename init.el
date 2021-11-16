@@ -904,8 +904,14 @@ before packages are loaded."
     (org-roam org-journal org-projectile)
     :init
     (setq
-     org-agenda-skip-unavailable-files t
-     org-agenda-inhibit-startup t)
+     ;; https://orgmode.org/manual/Speeding-Up-Your-Agendas.html
+     ;; Do not dim blocked tasks:
+     org-agenda-dim-blocked-tasks nil
+     ;; Stop preparing agenda buffers on startup:
+     org-agenda-inhibit-startup t
+     ;; Disable tag inheritance for agendas:
+     org-agenda-use-tag-inheritance nil
+     org-agenda-skip-unavailable-files t)
     :config
     (setq org-agenda-files
           (->> (org-projectile-todo-files)
@@ -934,16 +940,50 @@ before packages are loaded."
   (use-package org-roam
     :defer t
     :custom
-    (org-roam-directory (file-truename"~/Dropbox/gyan/"))
+    (org-roam-directory (file-truename "~/Dropbox/gyan/"))
+    (org-roam-capture-templates
+     '(("d" "default" plain "%?"
+        :target (file+head "${slug}.org"
+                           "#+title: ${title}")
+        :unnarrowed t)))
     (org-roam-dailies-capture-templates
      '(("d" "daily" plain (function org-roam-capture--get-point) ""
        :immediate-finish t
        :file-name "journals/%<%Y-%m-%d>"
        :head "#+title: %<<%Y-%m-%d>>"))))
 
+  (use-package org-table
+    :defer t
+    :config
+    (defun markdown-org-table-align-advice ()
+      "Replace \"+\" sign with \"|\" in tables."
+      (when (member major-mode '(markdown-mode gfm-mode))
+        (save-excursion
+          (save-restriction
+            (narrow-to-region (org-table-begin) (org-table-end))
+            (goto-char (point-min))
+            (while (search-forward "-+-" nil t)
+              (replace-match "-|-"))))))
+
+    ;; use github markdown syntax for tables in markdown files
+    (advice-add 'org-table-align :after 'markdown-org-table-align-advice))
+
   ;; load org-tempo
   (use-package org-tempo
     :after org)
+
+  ;; https://www.youtube.com/watch?v=vz9aLmxYJB0
+  (use-package org-tree-slide
+    :defer t
+    :custom
+    (org-tree-slide-in-effect t)
+    (org-tree-slide-activate-message "Presentation started!")
+    (org-tree-slide-deactivate-message "Presentation finished!")
+    (org-tree-slide-header t)
+    (org-tree-slide-breadcrumbs " >> ")
+    (org-image-actual-width nil)
+    :config
+    (org-tree-slide-presentation-profile))
 
   (use-package org-projectile
     :defer t
