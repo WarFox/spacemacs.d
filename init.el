@@ -1032,12 +1032,12 @@ before packages are loaded."
     :defer t
     :config (global-so-long-mode 1))
 
-  (defun my/open-org-roam-server-ui ()
+  (defun warfox/open-org-roam-server-ui ()
     (interactive )
     (xwidget-webkit-browse-url
      (format "http://localhost:%n" org-roam-server-port)))
 
-  (defun my/change-file-extension ()
+  (defun warfox/change-file-extension ()
     (interactive)
     (let* ((new-extension (read-from-minibuffer "Type the new extension including the dot (.): "))
            (new-file-name (concat (file-name-sans-extension buffer-file-name) new-extension))
@@ -1049,12 +1049,12 @@ before packages are loaded."
       (message (concat "File renamed to " new-file-name))))
 
   ;; projectile open README file
-  (defun my/projectile-open-readme ()
+  (defun warfox/projectile-open-readme ()
     "open README.md file in the current project root"
     (interactive)
     (find-file (concat (projectile-project-root) "README.md")))
 
-  (defun my/projectile-open-readme-org ()
+  (defun warfox/projectile-open-readme-org ()
     "open README.org file in the current project root"
     (interactive)
     (find-file (concat (projectile-project-root) "README.org")))
@@ -1063,24 +1063,24 @@ before packages are loaded."
   (spacemacs/declare-prefix "op" "projectile")
   (spacemacs/declare-prefix "opr" "README")
   (spacemacs/set-leader-keys
-    "opro" 'my/projectile-open-readme-org
-    "oprm" 'my/projectile-open-readme)
+    "opro" 'warfox/projectile-open-readme-org
+    "oprm" 'warfox/projectile-open-readme)
 
   (spacemacs/declare-prefix "of" "file")
-  (spacemacs/set-leader-keys "ofx" 'my/change-file-extension)
-  (spacemacs/set-leader-keys "oh" 'my/hexo-blog)
+  (spacemacs/set-leader-keys "ofx" 'warfox/change-file-extension)
+  (spacemacs/set-leader-keys "oh" 'warfox/hexo-blog)
 
   (setq auth-sources '("~/.authinfo.gpg" "~/.authinfo" "~/.netrc"))
 
   ;; display time mode in graphics mode
-  (defun my/modeline-extras()
+  (defun warfox/modeline-extras()
     (setq display-time-24hr-format t
           display-time-day-and-date t)
     (display-time-mode t)
     (fancy-battery-mode t))
 
   (if (display-graphic-p)
-      (my/modeline-extras))
+      (warfox/modeline-extras))
 
   ;; load local.el file it it exists
   (when-let ((local-file "~/.spacemacs.d/local.el")
