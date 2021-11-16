@@ -722,7 +722,21 @@ If you are unsure, try setting them in `dotspacemacs/user-config' first."
   (setq configuration-layer-elpa-archives '(("melpa-stable" . "stable.melpa.org/packages/")
                                             ("melpa" . "melpa.org/packages/")
                                             ("org" . "orgmode.org/elpa/")
-                                            ("gnu" . "elpa.gnu.org/packages/"))))
+                                            ("gnu" . "elpa.gnu.org/packages/")))
+
+  ;; setup straight.el
+  (defvar bootstrap-version)
+  (let ((bootstrap-file
+         (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
+        (bootstrap-version 5))
+    (unless (file-exists-p bootstrap-file)
+      (with-current-buffer
+          (url-retrieve-synchronously
+           "https://raw.githubusercontent.com/raxod502/straight.el/develop/install.el"
+           'silent 'inhibit-cookies)
+        (goto-char (point-max))
+        (eval-print-last-sexp)))
+    (load bootstrap-file nil 'nomessage)))
 
 (defun dotspacemacs/user-load ()
   "Library to load while dumping.
