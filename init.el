@@ -235,6 +235,7 @@ This function should only modify configuration layer settings."
    ;; `dotspacemacs/user-config'. To use a local version of a package, use the
    ;; `:location' property: '(your-package :location "~/path/to/your-package/")
    dotspacemacs-additional-packages '(atomic-chrome
+                                      direnv
                                       doom-themes
                                       easy-hugo
                                       ejc-sql
@@ -799,11 +800,13 @@ before packages are loaded."
 
         python-shell-completion-native-enable nil
 
-        blacken-line-length 100
-        blacken-skip-string-normalization t
-
         ;; use x-widget-webkit-browse-url as default browse-url
         browse-url-browser-function 'xwidget-webkit-browse-url)
+
+  (use-package blacken
+    :custom
+    (blacken-line-length 100)
+    (blacken-skip-string-normalization t))
 
   (use-package clojure-mode
     :defer t
@@ -819,6 +822,11 @@ before packages are loaded."
     (deft-directory "~/Dropbox/org-mode/deft")
     :config
     (add-to-list 'org-agenda-files deft-directory))
+
+  (use-package direnv
+    :defer t
+    :config
+    (direnv-mode))
 
   ;; ;; doom theme start
   (use-package doom-themes
