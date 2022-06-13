@@ -82,7 +82,7 @@ This function should only modify configuration layer settings."
      c-c++
      (clojure :variables
               clojure-enable-sayid t
-              clojure-enable-linters t
+              clojure-enable-linters '(clj-kondo joker)
               clojure-enable-clj-refactor t
               clojure-backend 'cider)
      command-log
@@ -107,7 +107,7 @@ This function should only modify configuration layer settings."
            tabs-style "bar")
      games
      git
-     github
+     ;; github
      go
      haskell
      helpful
