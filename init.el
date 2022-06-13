@@ -208,6 +208,11 @@ This function should only modify configuration layer settings."
                treemacs-use-icons-dired t
                treemcas-use-git-mode 'deferred
                treemacs-use-scope-type 'Perspectives)
+     (tree-sitter :variables
+                  spacemacs-tree-sitter-hl-black-list '(js2-mode rjsx-mode)
+                  tree-sitter-syntax-highlight-enable t
+                  tree-sitter-fold-enable t
+                  tree-sitter-fold-indicators-enable nil)
      (typescript :variables
                  typescript-fmt-on-save t
                  typescript-fmt-tool 'prettier)
