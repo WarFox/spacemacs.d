@@ -840,7 +840,7 @@ before packages are loaded."
   (use-package easy-hugo
     :defer t
     :custom
-    (easy-hugo-basedir "~/Workspace/Personal/tech/")
+    (easy-hugo-basedir "~/Workspace/github.com/WarFox/tech/")
     (easy-hugo-url "https://deepumohan.com/")
     (easy-hugo-postdir "content")
     (easy-hugo-amazon-s3-bucket-name "your-amazon-s3-bucket-name")
