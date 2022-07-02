@@ -726,10 +726,10 @@ configuration.
 It is mostly for variables that should be set before packages are loaded.
 If you are unsure, try setting them in `dotspacemacs/user-config' first."
 
-  (setq configuration-layer-elpa-archives '(("melpa-stable" . "stable.melpa.org/packages/")
-                                            ("melpa" . "melpa.org/packages/")
-                                            ("org" . "orgmode.org/elpa/")
-                                            ("gnu" . "elpa.gnu.org/packages/")))
+  (setq configuration-layer-elpa-archives '(("melpa-stable" . "https://stable.melpa.org/packages/")
+                                            ("melpa" . "https://melpa.org/packages/")
+                                            ("gnu" . "https://elpa.gnu.org/packages/")
+                                            ("nongnu" . "https://elpa.nongnu.org/nongnu/")))
 
   ;; setup straight.el
   (defvar bootstrap-version)
