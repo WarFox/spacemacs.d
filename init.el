@@ -1107,6 +1107,23 @@ before packages are loaded."
   (if (display-graphic-p)
       (warfox/modeline-extras))
 
+  (defun warfox/find-file-in-project (filename)
+    "Open a file like find-file. If the file belongs to a project, creates
+    a new persp and enables projectile mode for it."
+    (interactive (list (read-file-name "Find file: " nil default-directory (confirm-nonexistent-file-or-buffer))))
+    (let* ((persp-reset-windows-on-nil-window-conf t)
+          (filename-fullpath (file-truename filename))
+          (filename-directory (if (file-directory-p filename-fullpath)
+                                  (file-name-as-directory filename-fullpath)
+                                (file-name-directory filename-fullpath)))
+          (projectile-switch-project-action (lambda () (find-file filename-fullpath)))
+          (project-root (projectile-root-bottom-up filename-directory)))
+      (if project-root
+          (progn
+            (persp-switch (file-name-nondirectory (directory-file-name project-root)))
+            (projectile-switch-project-by-name project-root))
+        (message "Requested file does not belong to any project"))))
+
   ;; load local.el file it it exists
   (when-let ((local-file "~/.spacemacs.d/local.el")
              (file-exists? (file-exists-p local-file)))
