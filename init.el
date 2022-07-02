@@ -235,6 +235,7 @@ This function should only modify configuration layer settings."
    ;; `dotspacemacs/user-config'. To use a local version of a package, use the
    ;; `:location' property: '(your-package :location "~/path/to/your-package/")
    dotspacemacs-additional-packages '(atomic-chrome
+                                      blamer
                                       direnv
                                       doom-themes
                                       easy-hugo
@@ -760,9 +761,6 @@ before packages are loaded."
   ;; Change evil-hybrid-state-cursor cursor to box
   (spacemacs/add-evil-cursor "hybrid" "SkyBlue2" 'box)
 
-  ;; use spacemacs as $EDITOR or $GIT_EDITOR for editing git commit messages
-  (global-git-commit-mode t)
-
   ;; frame
   (add-to-list 'default-frame-alist
                '(ns-transparent-titlebar . t))
@@ -807,6 +805,20 @@ before packages are loaded."
     :custom
     (blacken-line-length 100)
     (blacken-skip-string-normalization t))
+
+  (use-package blamer
+    :ensure t
+    :defer 20
+    :custom
+    (blamer-idle-time 0.75)
+    (blamer-min-offset 70)
+    :custom-face
+    (blamer-face ((t :foreground "#7a88cf"
+                     :background nil
+                     :height 100
+                     :italic t)))
+    :config
+    (global-blamer-mode 1))
 
   (use-package clojure-mode
     :defer t
