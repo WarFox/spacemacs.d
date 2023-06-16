@@ -15,10 +15,11 @@
 
 ;; Adopt a sneaky garbage collection strategy of waiting until idle time to
 ;; collect; staving off the collector while the user is working.
-(add-hook 'emacs-startup-hook #'(lambda ()
-                                  (setq gcmh-idle-delay 5
-                                        gcmh-high-cons-threshold (* 16 1024 1024)  ;; 16mb
-                                        gcmh-verbose nil)))
+(add-hook 'emacs-startup-hook
+          #'(lambda ()
+              (setq gcmh-idle-delay 5
+                    gcmh-high-cons-threshold (* 16 1024 1024)  ;; 16mb
+                    gcmh-verbose nil)))
 
 ;;;;; Byte compilation blacklist
 (if (require 'comp nil t)
@@ -137,15 +138,18 @@ This function should only modify configuration layer settings."
      nav-flash
      nginx
      (org :variables
-          org-enable-github-support t
           org-enable-bootstrap-support t
-          org-want-todo-bindings t
-          org-enable-sticky-header t
+          org-enable-github-support t
+          org-enable-modern-support t
+          org-enable-notifications t
           org-enable-org-brain-support nil
-          org-enable-org-journal-support t
+          org-enable-reveal-js-support t
           org-enable-roam-support t
-          org-enable-roam-server t
-          org-enable-reveal-js-support t)
+          org-enable-roam-ui t
+          org-enable-sticky-header t
+          org-start-notification-daemon-on-startup t
+          org-want-todo-bindings t
+          org-id-link-to-org-use-id 'create-if-interactive-and-no-custom-id)
      osx
      pdf
      plantuml
@@ -828,13 +832,6 @@ before packages are loaded."
     :hook
     aggressive-indent-mode)
 
-  (use-package deft
-    :defer t
-    :custom
-    (deft-directory "~/Dropbox/org-mode/deft")
-    :config
-    (add-to-list 'org-agenda-files deft-directory))
-
   (use-package direnv
     :defer t
     :config
@@ -940,7 +937,7 @@ before packages are loaded."
   (use-package org-agenda
     :defer t
     :after
-    (org-roam org-journal org-projectile)
+    (org-roam org-projectile)
     :init
     (setq
      ;; https://orgmode.org/manual/Speeding-Up-Your-Agendas.html
@@ -957,8 +954,7 @@ before packages are loaded."
                (-filter #'file-exists-p)
                (-keep 'identity)
                (-distinct)))
-    (add-to-list 'org-agenda-files org-roam-directory)
-    (add-to-list 'org-agenda-files org-journal-dir))
+    (add-to-list 'org-agenda-files org-roam-directory))
 
   (use-package org-jira
     :defer t
@@ -967,19 +963,11 @@ before packages are loaded."
     :config
     (add-to-list 'org-agenda-files org-jira-working-dir))
 
-  (use-package org-journal
-    :defer t
-    :custom
-    (org-journal-enable-agenda-integration t)
-    (org-journal-date-prefix "#+title: ")
-    (org-journal-file-format "%Y-%m-%d.org")
-    (org-journal-date-format "%d/%m/%y %a")
-    (org-journal-dir "~/Dropbox/org-mode/journals/"))
-
   (use-package org-roam
     :defer t
     :custom
-    (org-roam-directory (file-truename "~/Dropbox/gyan/"))
+    (org-roam-db-location "~/.org-roam.db")
+    (org-roam-directory "~/Library/CloudStorage/Dropbox/org-mode/")
     (org-roam-capture-templates
      '(("d" "default" plain "%?"
         :target (file+head "${slug}.org"
