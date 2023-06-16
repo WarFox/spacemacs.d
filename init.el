@@ -240,6 +240,7 @@ This function should only modify configuration layer settings."
    ;; `:location' property: '(your-package :location "~/path/to/your-package/")
    dotspacemacs-additional-packages '(atomic-chrome
                                       blamer
+                                      bazel
                                       direnv
                                       doom-themes
                                       easy-hugo
@@ -804,6 +805,9 @@ before packages are loaded."
 
         ;; use x-widget-webkit-browse-url as default browse-url
         browse-url-browser-function 'xwidget-webkit-browse-url)
+
+  (use-package bazel
+    :mode  ( "/.+\\.star\\'" . bazel-starlark-mode))
 
   (use-package blacken
     :custom
