@@ -90,10 +90,8 @@ This function should only modify configuration layer settings."
      common-lisp
      compleseus
      confluence
-     copy-as-format
      csv
      dap ; debug adapter protocol
-     deft
      docker
      elixir
      elm
@@ -102,19 +100,16 @@ This function should only modify configuration layer settings."
      erlang
      (tabs :variables
            tabs-gray-out-unselected 't
-           tabs-height 32
+           tabs-height 30
            tabs-navigation 'tabs
            tabs-show-navigation-buttons t
            tabs-style "bar")
      games
      git
-     ;; github
      go
      haskell
      helpful
      html
-     imenu-list
-     ivy
      (java :variables
            java-backend 'lsp)
      (javascript :variables
@@ -124,12 +119,7 @@ This function should only modify configuration layer settings."
                  javascript-repl `nodejs)
      jsonnet
      latex
-     (lsp :variables
-          lsp-headerline-breadcrumb-enable nil
-          lsp-lens-enable nil
-          lsp-modeline-code-actions-enable nil
-          lsp-modeline-diagnostics-enable nil
-          lsp-use-lsp-ui nil)
+     lsp
      (markdown :variables
                markdown-fmt-tool 'prettier
                markdown-live-preview-engine 'vmd)
@@ -187,7 +177,6 @@ This function should only modify configuration layer settings."
             scala-indent:use-javadoc-style t)
      scheme
      search-engine
-     semantic
      (shell :variables
             shell-default-shell 'vterm
             shell-file-name "/usr/local/bin/fish")
@@ -220,8 +209,7 @@ This function should only modify configuration layer settings."
      (typescript :variables
                  typescript-fmt-on-save t
                  typescript-fmt-tool 'prettier)
-     (unicode-fonts :variables
-                    unicode-fonts-force-multi-color-on-mac t)
+     unicode-fonts
      vagrant
      (version-control :variables
                       version-control-diff-tool 'diff-hl
