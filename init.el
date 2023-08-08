@@ -928,7 +928,7 @@ before packages are loaded."
                               ("done" . "ForestGreen")))
      ;; display custom times
     (org-display-custom-times t)
-    (org-directory "~/Dropbox/org-mode")
+    (org-directory  (file-truename "~/Dropbox/org-mode"))
     (org-time-stamp-custom-formats '("</%d/%m/%y %a>" . "</%d/%m/%y %a %H:%M>"))
     (org-time-stamp-custom-formats '("<%d/%m/%Y %a>" . "<%d/%m/%Y %a %H:%M>"))
     ;; reveal-js
@@ -963,7 +963,7 @@ before packages are loaded."
   (use-package org-jira
     :defer t
     :custom
-    (org-jira-working-dir "~/Dropbox/org-mode/org-jira")
+    (org-jira-working-dir (file-truename "~/Dropbox/org-mode/org-jira"))
     :config
     (add-to-list 'org-agenda-files org-jira-working-dir))
 
@@ -971,7 +971,7 @@ before packages are loaded."
     :defer t
     :custom
     (org-roam-db-location "~/.org-roam.db")
-    (org-roam-directory "~/Library/CloudStorage/Dropbox/org-mode/")
+    (org-roam-directory (file-truename "~/Dropbox/org-mode/"))
     (org-roam-capture-templates
      '(("d" "default" plain "%?"
         :target (file+head "${slug}.org"
@@ -1020,7 +1020,7 @@ before packages are loaded."
     :defer t
     :custom
     (org-projectile-file "TODOs.org")
-    (org-projectile-projects-file "~/Dropbox/org-mode/Projects.org")
+    (org-projectile-projects-file (file-truename "~/Dropbox/org-mode/Projects.org"))
     :config
     (progn
       (push (org-projectile-project-todo-entry)
