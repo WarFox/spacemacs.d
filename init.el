@@ -179,7 +179,7 @@ This function should only modify configuration layer settings."
      search-engine
      (shell :variables
             shell-default-shell 'vterm
-            shell-file-name "/usr/local/bin/fish")
+            shell-file-name "/bin/sh")
      shell-scripts
      slack
      spacemacs-purpose
