@@ -746,6 +746,8 @@ before packages are loaded."
   (add-to-list 'default-frame-alist
                '(ns-appearance . dark)) ;; or light - depending on your theme
 
+  (pixel-scroll-precision-mode 1) ;; introduced in emacs 29.1
+
   ;; M-3 is mapped to window 3, so map M-# to get £ sign GBP (pound sign)
   ;; (This is for Dvorak layout, UK layout may need to map # instead)
   ;; (global-set-key (kbd "M-#") '(lambda() (interactive) (insert "£")))
