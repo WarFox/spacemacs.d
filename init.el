@@ -71,6 +71,7 @@ This function should only modify configuration layer settings."
      ;; ----------------------------------------------------------------
      (ansible :variables
               ansible-auto-encrypt-decrypt t)
+     asciidoc
      (auto-completion :variables
                       ;; default backend is company
                       auto-completion-enable-help-tooltip 'manual
@@ -118,6 +119,7 @@ This function should only modify configuration layer settings."
                  javascript-import-tool 'import-js
                  javascript-repl `nodejs)
      jsonnet
+     kotlin
      latex
      lsp
      lua
