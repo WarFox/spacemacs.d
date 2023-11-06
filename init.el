@@ -1059,8 +1059,7 @@ before packages are loaded."
   (defun warfox/modeline-extras()
     (setq display-time-24hr-format t
           display-time-day-and-date t)
-    (display-time-mode t)
-    (fancy-battery-mode t))
+    (display-time-mode t))
 
   (if (display-graphic-p)
       (warfox/modeline-extras))
