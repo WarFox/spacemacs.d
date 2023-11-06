@@ -920,10 +920,11 @@ before packages are loaded."
     :config
     (setq org-agenda-files
           (->> (org-projectile-todo-files)
+               (-concat (directory-files-recursively org-roam-directory "\\.org$"))
+               (-concat (directory-files-recursively org-directory "\\.org$"))
                (-filter #'file-exists-p)
                (-keep 'identity)
-               (-distinct)))
-    (add-to-list 'org-agenda-files org-roam-directory))
+               (-distinct))))
 
   (use-package org-jira
     :defer t
