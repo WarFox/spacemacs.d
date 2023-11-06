@@ -430,7 +430,7 @@ Check (dotspacemacs/get-variable-string-list) for all vars you can configure.
    ;; a non-negative integer (pixel size), or a floating-point (point size).
    ;; Point size is recommended, because it's device independent. (default 10.0)
    dotspacemacs-default-font '("Fira Code"
-                               :size 12
+                               :size 14
                                :weight normal
                                :width normal)
 
