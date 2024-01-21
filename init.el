@@ -232,6 +232,10 @@ This function should only modify configuration layer settings."
    ;; `:location' property: '(your-package :location "~/path/to/your-package/")
    dotspacemacs-additional-packages '(atomic-chrome
                                       bazel
+                                      (copilot :location (recipe
+                                                           :fetcher github
+                                                           :repo "copilot-emacs/copilot.el"
+                                                           :files ("*.el" "dist")))
                                       direnv
                                       doom-themes
                                       easy-hugo
@@ -760,6 +764,19 @@ before packages are loaded."
   ;; (global-set-key (kbd "M-£") '(lambda() (interactive) (insert "#")))
   ;; (define-key winum-keymap "\M-3" nil)
   ;; (global-set-key (kbd "M-3")(lambda () (interactive) (insert "#")))
+
+  ;; GitHub Copilot
+  (with-eval-after-load 'company
+    ;; disable inline previews
+    (delq 'company-preview-if-just-one-frontend company-frontends))
+
+  (with-eval-after-load 'copilot
+    (define-key copilot-completion-map (kbd "<tab>") 'copilot-accept-completion)
+    (define-key copilot-completion-map (kbd "TAB") 'copilot-accept-completion)
+    (define-key copilot-completion-map (kbd "C-TAB") 'copilot-accept-completion-by-word)
+    (define-key copilot-completion-map (kbd "C-<tab>") 'copilot-accept-completion-by-word))
+
+  (add-hook 'prog-mode-hook 'copilot-mode)
 
   (setq ns-alternate-modifier 'meta
         ns-right-alternate-modifier 'none
